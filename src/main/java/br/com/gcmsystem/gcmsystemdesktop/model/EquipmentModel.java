@@ -27,7 +27,7 @@ public class EquipmentModel {
     private String brand;
     // private String category;
     private CategoryEnum category;
-    private Integer registrationNumber; //nºsérie ou patrimônio
+    private Integer registrationNumber; //nºsérie, prefixo, patrimônio
     private String plate; //Placa Veículo
 
     @OneToMany(mappedBy = "equipment")

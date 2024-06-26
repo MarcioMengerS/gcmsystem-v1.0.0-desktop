@@ -59,24 +59,24 @@
                   <TableView fx:id="equipmentTableView" layoutX="1.0" prefHeight="347.0" prefWidth="831.0">
                     <columns>
                       <TableColumn fx:id="idColumn" prefWidth="56.0" text="ID" />
-                        <TableColumn fx:id="registerColumn" prefWidth="106.0" text="Registro" />
-                      <TableColumn fx:id="modelColumn" prefWidth="113.0" text="Modelo" />
-                        <TableColumn fx:id="brandColumn" prefWidth="144.0" text="Marca" />
                         <TableColumn fx:id="categoryColumn" prefWidth="201.0" text="Categoria" />
-                        <TableColumn fx:id="plateColumn" prefWidth="169.0" text="Placa" />
+                        <TableColumn fx:id="registerColumn" prefWidth="106.0" text="Nº Série/Prefixo" />
+                      <TableColumn fx:id="modelColumn" prefWidth="113.0" text="Modelo" />
+                        <TableColumn fx:id="brandColumn" prefWidth="130.0" text="Marca" />
+                        <TableColumn fx:id="plateColumn" prefWidth="113.0" text="Placa" />
                     </columns>
                   </TableView>
                </children>
             </AnchorPane>
-            <Label layoutX="57.0" layoutY="49.0" text="ID" />
-            <Label layoutX="27.0" layoutY="94.0" text="Modelo" />
-            <Label layoutX="131.0" layoutY="49.0" text="Marca" />
-            <Label layoutX="309.0" layoutY="94.0" text="Categoria" />
-            <TextField fx:id="brandField" layoutX="171.0" layoutY="54.0" prefHeight="25.0" prefWidth="110.0" />
-            <TextField fx:id="idField" disable="true" layoutX="77.0" layoutY="54.0" prefHeight="25.0" prefWidth="39.0" />
-            <TextField fx:id="modelField" layoutX="77.0" layoutY="102.0" prefHeight="25.0" prefWidth="204.0" />
-            <TextField fx:id="numField" layoutX="403.0" layoutY="54.0" prefHeight="25.0" prefWidth="153.0" />
-            <TextField fx:id="plateField" layoutX="639.0" layoutY="102.0" prefHeight="25.0" prefWidth="120.0" />
+            <Label layoutX="498.0" layoutY="59.0" text="ID" />
+            <Label layoutX="37.0" layoutY="94.0" text="Modelo" />
+            <Label layoutX="296.0" layoutY="56.0" text="Marca" />
+            <Label layoutX="29.0" layoutY="50.0" text="Categoria" />
+            <TextField fx:id="brandField" layoutX="336.0" layoutY="61.0" prefHeight="25.0" prefWidth="132.0" />
+            <TextField fx:id="idField" disable="true" layoutX="518.0" layoutY="64.0" prefHeight="25.0" prefWidth="87.0" />
+            <TextField fx:id="modelField" layoutX="85.0" layoutY="102.0" prefHeight="25.0" prefWidth="127.0" />
+            <TextField fx:id="numField" layoutX="329.0" layoutY="101.0" prefHeight="25.0" prefWidth="140.0" />
+            <TextField fx:id="plateField" layoutX="519.0" layoutY="101.0" prefHeight="25.0" prefWidth="87.0" />
             <Label fx:id="lblWarning" layoutX="549.0" layoutY="172.0" prefHeight="42.0" prefWidth="284.0" text="Insira informações solicitadas" textFill="#d00808" visible="false">
                <font>
                   <Font name="Arial Bold" size="18.0" />
@@ -88,9 +88,9 @@
                   <Font name="System Bold" size="21.0" />
                </font>
             </Label>
-            <Label layoutX="298.0" layoutY="49.0" text="Nº Registro / Série" />
-            <Label layoutX="597.0" layoutY="98.0" text="Placa" />
-            <ComboBox fx:id="categoryComboBox" layoutX="366.0" layoutY="102.0" prefHeight="25.0" prefWidth="191.0" promptText="Tipo" />
+            <Label layoutX="236.0" layoutY="96.0" text="Nº Série/Prefixo" />
+            <Label layoutX="484.0" layoutY="96.0" text="Placa" />
+            <ComboBox fx:id="categoryComboBox" layoutX="86.0" layoutY="58.0" prefHeight="25.0" prefWidth="191.0" promptText="Tipo" />
          </children>
       </Pane>
    </center>

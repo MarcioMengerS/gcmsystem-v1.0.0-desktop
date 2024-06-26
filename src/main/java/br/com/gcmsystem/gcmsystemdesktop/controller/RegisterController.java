@@ -17,21 +17,28 @@ import br.com.gcmsystem.gcmsystemdesktop.model.RegisterModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import br.com.gcmsystem.gcmsystemdesktop.service.GcmService;
 import br.com.gcmsystem.gcmsystemdesktop.service.RegisterService;
+import br.com.gcmsystem.gcmsystemdesktop.util.UsbMonitor;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 @Component
 public class RegisterController implements Initializable{    
-
+    // private SerialPort usbPort;
+    // private volatile boolean deviceConnected = false;
+    // private volatile boolean leituraHabilitada = false;
+    // private volatile String result = "";
     @Autowired
     private GcmService gcmService;
     @Autowired
@@ -39,6 +46,10 @@ public class RegisterController implements Initializable{
     @Autowired
     private RegisterService registerService;
 
+    @FXML
+    private Text resultRfid;
+    @FXML//botões para testar usb
+    private Button loanButton;//, leUsb, closeUsb;
     @FXML
     private TextArea noteText;
     @FXML
@@ -54,8 +65,8 @@ public class RegisterController implements Initializable{
 
     @FXML
     private TableColumn<RegisterModel, String>
-        gcmNumberColumn, gcmNameColumn, gcmEmailColumn,gcmTagColumn,
-        equipmentPlateColumn,equipmentPatrColumn,equipmentBrandColumn, equipmentModelColumn, equipmentCategoryColumn;
+        gcmNameColumn, gcmEmailColumn,gcmTagColumn,
+        equipmentPatrColumn, equipmentCategoryColumn, equipmentBrandColumn, equipmentModelColumn, equipmentPlateColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,28 +80,68 @@ public class RegisterController implements Initializable{
         });
 
         equipmCatComboBox.getItems().setAll(CategoryEnum.values());
+
+
+        // leUsb.setOnAction(event ->{readCard.monitorarUSB();readCard.toogleLeitura();});
+        // leUsb.setOnAction(event -> {
+        //     resultRfid.setText("lendo ...");        
+        //     lerCracha();
+        // });
+        // loanButton.setOnAction(event -> {
+        //     resultRfid.setText("lendo ...");        
+        // });
+        
+        
+        //closeUsb.setOnAction(event->{ });
  
         list();
     }
 
     @FXML
-    public void loan(){
-        RegisterModel registerModel = new RegisterModel();
-        registerModel.setStatus("Emprestado");
-        registerModel.setNote(noteText.getText());
+    public void loan() {
+        // Desabilita o botão na thread da aplicação
+        loanButton.setDisable(true);
 
+        // Executa a operação de forma assíncrona em uma nova thread
+        new Thread(() -> {
+            String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
+
+            // Atualiza a interface gráfica na thread da aplicação
+            Platform.runLater(() -> {
+                processResult(result);
+                loanButton.setDisable(false); // Reabilita o botão após a operação
+            });
+        }).start();
+    }
+
+    
+    public void processResult(String result){
         String numberGcm = gcmComboBox.getSelectionModel().getSelectedItem();
         GcmModel gcmModel = gcmService.findByNumber(Short.parseShort(numberGcm));
-        registerModel.setGcm(gcmModel);
 
-        EquipmentModel equipmentModel = new EquipmentModel();
-        String equipmentNum = equipmNumComboBox.getSelectionModel().getSelectedItem();
-        Integer i = Integer.valueOf(equipmentNum);
-        equipmentModel = equipmentService.findByRegistrationNumber(i);
-        registerModel.setEquipment(equipmentModel);
+        // result = UsbMonitor.monitorarUSB();//le cartão RFID de forma sincrona
 
-        registerService.save(registerModel);
+        //Encontrou GCM? compara as Tags
+        if(gcmModel.getTag().equals(result)){
+            resultRfid.setText("GCM Identificado!");
+            RegisterModel registerModel = new RegisterModel();//Instancia objeto cautela
+            registerModel.setStatus("Emprestado");//marca status como emprestado na cautela
+            registerModel.setNote(noteText.getText()); //registra observação na cautela
+            registerModel.setGcm(gcmModel);// associa GCM a cautela
+
+            EquipmentModel equipmentModel = new EquipmentModel();//Instancia objeto Equipamento
+            String equipmentNum = equipmNumComboBox.getSelectionModel().getSelectedItem(); //pega patrimonio selecionado pelo usuário
+            Integer i = Integer.valueOf(equipmentNum);// converte em numero
+
+            equipmentModel = equipmentService.findByRegistrationNumber(i);//busca equipamnto pelo numero de patrimonio
+            registerModel.setEquipment(equipmentModel);//associa Equipamento a cautela
+
+            registerService.save(registerModel);// salva cautela no banco de dados
+        }else{
+            resultRfid.setText("GM não corresponde ao cartão inserido");
+        }
         list();
+        loanButton.setDisable(false);
     }
     
     @FXML
@@ -224,4 +275,14 @@ public class RegisterController implements Initializable{
         equipmNumComboBox.getItems().addAll(values);
         // return values;
     }
+
+    // public void lerCracha(){
+    //     result =null;
+    //     readCard.monitorarUSB(result -> {
+    //         System.out.println("Resultado Leitura: "+result);
+
+    //         result = result;
+    //         resultRfid.setText(result);
+    //     });
+    // }
 }

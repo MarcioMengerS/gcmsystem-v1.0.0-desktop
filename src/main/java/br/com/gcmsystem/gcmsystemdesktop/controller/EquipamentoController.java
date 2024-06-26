@@ -46,15 +46,15 @@ public class EquipamentoController {
     @FXML
     private TableColumn<EquipmentModel, CategoryEnum> categoryColumn;
 
-    public void initialize(){//showEquipamentoList() {
+    public void initialize(){
         // Método usado para carregar e exibir a lista de equipamentos
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id")); //propriedades do objeto GcmModel
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id")); //propriedades do objeto EquipmentModel
         modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
         brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
-        // categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-
         registerColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
+        plateColumn.setCellValueFactory(new PropertyValueFactory<>("plate"));
+
         list();
         //Preenchimento nos campos após seleção de itens na lista 
         equipmentTableView.getSelectionModel().selectedItemProperty()
@@ -65,6 +65,7 @@ public class EquipamentoController {
                     idField.setText(String.valueOf(item.getId()));
                     modelField.setText(item.getModel());
                     brandField.setText(item.getBrand());
+                    categoryComboBox.setValue(item.getCategory());
                     numField.setText(String.valueOf(item.getRegistrationNumber()));
                     plateField.setText(item.getPlate());
 
@@ -78,9 +79,9 @@ public class EquipamentoController {
         addButtonToTable();
         categoryComboBox.getItems().setAll(CategoryEnum.values());
     }
-
+    //Adiciona botão na última coluna da lista
     private void addButtonToTable() {
-        TableColumn<EquipmentModel, Void> actionColumn = new TableColumn<>("+ info");
+        TableColumn<EquipmentModel, Void> actionColumn = new TableColumn<>();
 
         Callback<TableColumn<EquipmentModel, Void>, TableCell<EquipmentModel, Void>> cellFactory = new Callback<TableColumn<EquipmentModel, Void>, TableCell<EquipmentModel, Void>>() {
             @Override
@@ -92,7 +93,7 @@ public class EquipamentoController {
                             EquipmentModel data = getTableView().getItems().get(getIndex());
                             Alert alert = new Alert(AlertType.INFORMATION);
                             alert.setTitle("Info equipamento");
-                            alert.setHeaderText("Pagamento Parcela");
+                            alert.setHeaderText("Informações complementares");
                             alert.setContentText("referencia ID = " + data.getId() );
 
                             alert.showAndWait(); 
@@ -134,6 +135,7 @@ public class EquipamentoController {
             equipmentModel.setBrand(brandField.getText());
             equipmentModel.setModel(modelField.getText());
             equipmentModel.setRegistrationNumber(Integer.parseInt(numField.getText()));
+            equipmentModel.setPlate(plateField.getText());
             equipmentModel.setCategory(categoryComboBox.getSelectionModel().getSelectedItem());
             // equipmentModel.setCategory(categoryComboBox.getSelectionModel().getSelectedItem().toString());
             equipmentService.save(equipmentModel);
@@ -146,9 +148,12 @@ public class EquipamentoController {
 
     @FXML
     public void update(){
-        item.setBrand(brandField.getText());
+        item.setCategory(categoryComboBox.getValue());
         item.setModel(modelField.getText());
-        // item.setCategory(categoryComboBox.getSelectionModel().getSelectedItem().toString());
+        item.setBrand(brandField.getText());
+        item.setRegistrationNumber(Integer.parseInt(numField.getText()));
+        item.setPlate(plateField.getText());
+
         equipmentService.save(item);
         list();
     }
