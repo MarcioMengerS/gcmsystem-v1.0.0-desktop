@@ -3,10 +3,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,7 @@ import br.com.gcmsystem.gcmsystemdesktop.util.UsbMonitor;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -34,11 +37,8 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 @Component
-public class RegisterController implements Initializable{    
-    // private SerialPort usbPort;
-    // private volatile boolean deviceConnected = false;
-    // private volatile boolean leituraHabilitada = false;
-    // private volatile String result = "";
+public class RegisterController implements Initializable{
+
     @Autowired
     private GcmService gcmService;
     @Autowired
@@ -48,8 +48,8 @@ public class RegisterController implements Initializable{
 
     @FXML
     private Text resultRfid;
-    @FXML//botões para testar usb
-    private Button loanButton;//, leUsb, closeUsb;
+    @FXML
+    private Button loanButton;
     @FXML
     private TextArea noteText;
     @FXML
@@ -70,7 +70,13 @@ public class RegisterController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        gcmComboBox.getItems().addAll(listAllGcm());
+
+        ///////// início autocomplete ////////////
+        ObservableList<String> items = FXCollections.observableArrayList(listAllGcm());
+        gcmComboBox.getItems().setAll(items);
+        TextFields.bindAutoCompletion(gcmComboBox.getEditor(), items);
+        /////////// fim autocomplete ////////////
+
         gcmComboBox.setOnAction(event->{
             gcmComboBox.getSelectionModel().getSelectedItem();//seleciona GCM desejado
         });
@@ -80,23 +86,11 @@ public class RegisterController implements Initializable{
         });
 
         equipmCatComboBox.getItems().setAll(CategoryEnum.values());
-
-
-        // leUsb.setOnAction(event ->{readCard.monitorarUSB();readCard.toogleLeitura();});
-        // leUsb.setOnAction(event -> {
-        //     resultRfid.setText("lendo ...");        
-        //     lerCracha();
-        // });
-        // loanButton.setOnAction(event -> {
-        //     resultRfid.setText("lendo ...");        
-        // });
-        
-        
-        //closeUsb.setOnAction(event->{ });
  
         list();
     }
 
+    //Empréstimo de equipamento. Thread para leitura do Crachá
     @FXML
     public void loan() {
         // Desabilita o botão na thread da aplicação
@@ -114,19 +108,18 @@ public class RegisterController implements Initializable{
         }).start();
     }
 
-    
+    //Instância da cautela e consolidação no banco
     public void processResult(String result){
         String numberGcm = gcmComboBox.getSelectionModel().getSelectedItem();
         GcmModel gcmModel = gcmService.findByNumber(Short.parseShort(numberGcm));
 
-        // result = UsbMonitor.monitorarUSB();//le cartão RFID de forma sincrona
-
         //Encontrou GCM? compara as Tags
         if(gcmModel.getTag().equals(result)){
-            resultRfid.setText("GCM Identificado!");
+            resultRfid.setText("GCM IDENTIFICADO!");
             RegisterModel registerModel = new RegisterModel();//Instancia objeto cautela
             registerModel.setStatus("Emprestado");//marca status como emprestado na cautela
             registerModel.setNote(noteText.getText()); //registra observação na cautela
+            
             registerModel.setGcm(gcmModel);// associa GCM a cautela
 
             EquipmentModel equipmentModel = new EquipmentModel();//Instancia objeto Equipamento
@@ -138,7 +131,7 @@ public class RegisterController implements Initializable{
 
             registerService.save(registerModel);// salva cautela no banco de dados
         }else{
-            resultRfid.setText("GM não corresponde ao cartão inserido");
+            resultRfid.setText("GM NÃO IDENTIFICADO");
         }
         list();
         loanButton.setDisable(false);
@@ -248,18 +241,11 @@ public class RegisterController implements Initializable{
         List<GcmModel> gcms = gcmService.findAll();
         ArrayList<String> val = new ArrayList<>();
         gcms.forEach((gm)->{
-            // numberGcms.add(gm.getNumber());
             val.add(String.valueOf(gm.getNumber()));
         });
+        Collections.sort(val);//ordena lista
         return val;
     }
-
-    // public List<String> listAllNumRegEquip(){
-    //     ArrayList<String> numReg = new ArrayList<String>();
-    //     List<EquipmentModel>equipments = equipmentService.findAll();
-    //     equipments.forEach((eq)-> numReg.add(eq.getRegistrationNumber().toString()));
-    //     return numReg;
-    // }
 
     //Retorna lista de nºs de registro a partir da categoria selecionada no combobox Equipamento/categoria
     //Apresenta resultado no combobox Patrimônio/Série
@@ -273,16 +259,6 @@ public class RegisterController implements Initializable{
             values.add(cat.getRegistrationNumber().toString());
         });
         equipmNumComboBox.getItems().addAll(values);
-        // return values;
     }
 
-    // public void lerCracha(){
-    //     result =null;
-    //     readCard.monitorarUSB(result -> {
-    //         System.out.println("Resultado Leitura: "+result);
-
-    //         result = result;
-    //         resultRfid.setText(result);
-    //     });
-    // }
 }

@@ -45,7 +45,7 @@
                </font>
             </Label>
             <Label fx:id="lblTotal" layoutX="635.0" layoutY="55.0" prefHeight="17.0" prefWidth="44.0" text="total" />
-            <TextField fx:id="tagField" disable="true" layoutX="529.0" layoutY="132.0" prefHeight="25.0" prefWidth="152.0" />
+            <TextField fx:id="tagField" alignment="CENTER" disable="true" layoutX="529.0" layoutY="132.0" prefHeight="25.0" prefWidth="173.0" />
             <TextField fx:id="numberField" layoutX="250.0" layoutY="51.0" prefHeight="25.0" prefWidth="56.0" />
             <Label layoutX="224.0" layoutY="55.0" text="Nº" />
             <Button fx:id="cardButton" layoutX="433.0" layoutY="132.0" mnemonicParsing="false" onAction="#searchTag" text="cadatrar crachá" />

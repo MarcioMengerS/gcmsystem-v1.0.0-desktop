@@ -131,6 +131,7 @@ public class GcmController{
     public void searchTag() {
         // Desabilita o botão na thread da aplicação
         cardButton.setDisable(true);
+        tagField.clear();
 
         // Executa a operação de forma assíncrona em uma nova thread
         new Thread(() -> {

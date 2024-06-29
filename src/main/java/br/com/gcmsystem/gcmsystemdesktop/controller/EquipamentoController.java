@@ -30,7 +30,7 @@ public class EquipamentoController {
     private EquipmentService equipmentService;
     
     @FXML
-    ComboBox<CategoryEnum> categoryComboBox = new ComboBox<>();
+    private ComboBox<CategoryEnum> categoryComboBox;
     @FXML
     private TextField idField, modelField, brandField, numField, plateField;
     @FXML
