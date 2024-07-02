@@ -22,10 +22,10 @@ public class GcmModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private Short number;
     private String name;
     private String email;
     private String tag;
-    private Short number;
     
     @OneToMany(mappedBy = "gcm")
     private List<RegisterModel> registrations;

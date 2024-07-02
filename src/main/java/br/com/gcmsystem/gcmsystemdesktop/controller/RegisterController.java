@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.controlsfx.control.textfield.TextFields;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import br.com.gcmsystem.gcmsystemdesktop.model.RegisterModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import br.com.gcmsystem.gcmsystemdesktop.service.GcmService;
 import br.com.gcmsystem.gcmsystemdesktop.service.RegisterService;
+import br.com.gcmsystem.gcmsystemdesktop.service.HistoricService;
 import br.com.gcmsystem.gcmsystemdesktop.util.UsbMonitor;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,25 +29,30 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 @Component
 public class RegisterController implements Initializable{
-
     @Autowired
     private GcmService gcmService;
     @Autowired
     private EquipmentService equipmentService;
     @Autowired
     private RegisterService registerService;
+    @Autowired
+    private HistoricService historicService;
 
     @FXML
     private Text resultRfid;
@@ -66,20 +74,16 @@ public class RegisterController implements Initializable{
     @FXML
     private TableColumn<RegisterModel, String>
         gcmNameColumn, gcmEmailColumn,gcmTagColumn,
-        equipmentPatrColumn, equipmentCategoryColumn, equipmentBrandColumn, equipmentModelColumn, equipmentPlateColumn;
+        equipmentPatrColumn, equipmentCategoryColumn, equipmentBrandColumn, equipmentModelColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ///////// início autocomplete ////////////
+        ///////// início autocomplete gcmComboBox ////////////
         ObservableList<String> items = FXCollections.observableArrayList(listAllGcm());
         gcmComboBox.getItems().setAll(items);
         TextFields.bindAutoCompletion(gcmComboBox.getEditor(), items);
-        /////////// fim autocomplete ////////////
-
-        gcmComboBox.setOnAction(event->{
-            gcmComboBox.getSelectionModel().getSelectedItem();//seleciona GCM desejado
-        });
+        /////////// fim autocomplete gcmComboBox ////////////
 
         equipmNumComboBox.setOnAction(event->{
             equipmNumComboBox.getSelectionModel().getSelectedItem();//seleciona equipamento desejado
@@ -95,6 +99,7 @@ public class RegisterController implements Initializable{
     public void loan() {
         // Desabilita o botão na thread da aplicação
         loanButton.setDisable(true);
+        resultRfid.setText("");
 
         // Executa a operação de forma assíncrona em uma nova thread
         new Thread(() -> {
@@ -124,11 +129,12 @@ public class RegisterController implements Initializable{
 
             EquipmentModel equipmentModel = new EquipmentModel();//Instancia objeto Equipamento
             String equipmentNum = equipmNumComboBox.getSelectionModel().getSelectedItem(); //pega patrimonio selecionado pelo usuário
-            Integer i = Integer.valueOf(equipmentNum);// converte em numero
-
-            equipmentModel = equipmentService.findByRegistrationNumber(i);//busca equipamnto pelo numero de patrimonio
+            //busca no register patrimonio com esse numero
+            Integer e = Integer.valueOf(equipmentNum);// converte em numero
+            equipmentModel = equipmentService.findByRegistrationNumber(e);//busca equipamnto pelo numero de patrimonio
             registerModel.setEquipment(equipmentModel);//associa Equipamento a cautela
 
+            historicService.createHistoric(registerModel);//registra no historico a cautela
             registerService.save(registerModel);// salva cautela no banco de dados
         }else{
             resultRfid.setText("GM NÃO IDENTIFICADO");
@@ -234,6 +240,7 @@ public class RegisterController implements Initializable{
                 return new SimpleStringProperty("");
             }
         });
+        addIconToTable();
         registerTableView.setItems(FXCollections.observableArrayList(registerService.findAll()));
     }
 
@@ -248,17 +255,105 @@ public class RegisterController implements Initializable{
     }
 
     //Retorna lista de nºs de registro a partir da categoria selecionada no combobox Equipamento/categoria
-    //Apresenta resultado no combobox Patrimônio/Série
+    // Método devolve a lista de equipamentos disponíveis para emprestimo
     @FXML
     public void searchByCategory(){
-        equipmNumComboBox.getItems().clear();
-        CategoryEnum category = equipmCatComboBox.getSelectionModel().getSelectedItem();
-        ArrayList<String> values = new ArrayList<>();
-        List<EquipmentModel> catList = equipmentService.findByCategory(category);
-        catList.forEach((cat)->{
-            values.add(cat.getRegistrationNumber().toString());
+        equipmNumComboBox.getItems().clear(); //limpa combobox
+        ArrayList<String> valuesSelec = new ArrayList<>();//equipamentos selecionados
+        CategoryEnum category = equipmCatComboBox.getSelectionModel().getSelectedItem(); //retorna a categoria selecionada pelo usuário
+        List<EquipmentModel> listCategoryAll = equipmentService.findByCategory(category); //Busca todos equipamentos da categoria
+        listCategoryAll.forEach((cat)->{
+            valuesSelec.add(cat.getRegistrationNumber().toString());
         });
-        equipmNumComboBox.getItems().addAll(values);
+        List<RegisterModel> listRegisterAll =registerService.findAll();//Busca todos as cautelas
+        if (listCategoryAll.size()!=0) {//Lista de equipamentos da mesma categoria estiver vazia retorna sem cadastro de equipamentos
+            if(listRegisterAll.size()!=0){//Lista de cautela vazia retorna lista de equipamento cheia
+                for (var i=0; listCategoryAll.size()>i; i++) {
+                    for (var z=0; listRegisterAll.size()>z; z++) {
+                        if(listRegisterAll.get(z).getEquipment().getId()==listCategoryAll.get(i).getId()){
+                            System.out.println("objeto emprestado de numero:"+listCategoryAll.get(i).getRegistrationNumber().toString());
+                            //remove somente os equipamentos que foram emprestados
+                            valuesSelec.remove(listCategoryAll.get(i).getRegistrationNumber().toString());
+                        }
+                    }
+                }
+            }
+        }else{               
+            //Não foi cadastrados equipamentos para categoria selecionada pelo usuario
+            System.out.println("categoria sem equipamento cadastrado");
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Lista vazia");
+            alert.setHeaderText("Informações complementares");
+            alert.setContentText("Não foi cadastrados equipamentos\n para categoria selecionada");
+
+            alert.showAndWait();
+            return;
+        }
+        equipmNumComboBox.getItems().addAll(valuesSelec);
     }
 
+    //Adiciona botão na última coluna da Tabela
+    private void addIconToTable() {
+        TableColumn<RegisterModel, String> editColumn = new TableColumn<>();
+
+        Callback<TableColumn<RegisterModel, String>, TableCell<RegisterModel, String>> cellFactory = (TableColumn<RegisterModel, String> param) -> {
+            // make cell containing buttons
+            final TableCell<RegisterModel, String> cell = new TableCell<RegisterModel, String>() {
+                
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+
+                    } else {
+                        FontIcon icon = new FontIcon(FontAwesomeRegular.ARROW_ALT_CIRCLE_DOWN);
+                        icon.setCursor(javafx.scene.Cursor.HAND);//apresenta como clicavel o icone
+                        icon.setIconSize(20);//tamanho icone
+                        icon.setIconColor(javafx.scene.paint.Color.BLUE);//cor icone
+                        setGraphic(icon);//insere icone na coluna 
+                        icon.setOnMouseClicked((MouseEvent event) -> {//aciona com o clic do mouse
+                            RegisterModel data = getTableView().getItems().get(getIndex());
+                            captureTag(data);
+                        });
+                    }
+                }
+            };
+            cell.setAlignment(Pos.CENTER);//centraliza itens da célula
+            return cell;
+        };
+        editColumn.setText("Devolve");
+        editColumn.setCellFactory(cellFactory);
+        registerTableView.getColumns().add(editColumn);
+    }
+
+    public void captureTag(RegisterModel register){
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Informação");
+        alert.setHeaderText("Leitura habilitada");
+        alert.setContentText("Aproxime ou encoste o cartão do leitor" );
+
+        alert.show();
+        // Executa a operação de forma assíncrona em uma nova thread
+        new Thread(() -> {
+            String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
+
+            // Atualiza a interface gráfica na thread da aplicação
+            Platform.runLater(() -> {//coincidem tag lida com a do banco
+                alert.close();
+                if(result.equals(register.getGcm().getTag())){
+                    deleteItemList(register.getId());
+                }else{
+                    //aviso não coincide regitro
+                }
+            });
+        }).start();
+    }
+
+    public void deleteItemList(Integer id){
+        registerService.delete(id);
+        list();
+    }
 }

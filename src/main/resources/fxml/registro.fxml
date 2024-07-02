@@ -14,7 +14,7 @@
    <center>
       <Pane prefHeight="600.0" prefWidth="1028.0" BorderPane.alignment="CENTER">
          <children>
-            <TableView fx:id="registerTableView" layoutX="4.0" layoutY="193.0" prefHeight="374.0" prefWidth="1067.0">
+            <TableView fx:id="registerTableView" layoutX="4.0" layoutY="193.0" prefHeight="290.0" prefWidth="1067.0">
               <columns>
                 <TableColumn fx:id="statusColumn" prefWidth="83.0" text="Status" />
                 <TableColumn fx:id="dateColumn" prefWidth="68.0" text="Data" />
@@ -32,7 +32,6 @@
                         <TableColumn fx:id="equipmentCategoryColumn" prefWidth="78.0" text="Categoria" />
                         <TableColumn fx:id="equipmentBrandColumn" prefWidth="76.0" text="Marca" />
                         <TableColumn fx:id="equipmentModelColumn" prefWidth="77.0" text="Modelo" />
-                        <TableColumn fx:id="equipmentPlateColumn" prefWidth="79.0" text="Placa" />
                      </columns>
                   </TableColumn>
                   <TableColumn fx:id="noteColumn" prefWidth="97.0" text="OBS." />

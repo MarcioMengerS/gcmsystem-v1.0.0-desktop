@@ -79,7 +79,7 @@ public class EquipamentoController {
         addButtonToTable();
         categoryComboBox.getItems().setAll(CategoryEnum.values());
     }
-    //Adiciona botão na última coluna da lista
+    //Adiciona botão na última coluna da Tabela
     private void addButtonToTable() {
         TableColumn<EquipmentModel, Void> actionColumn = new TableColumn<>();
 

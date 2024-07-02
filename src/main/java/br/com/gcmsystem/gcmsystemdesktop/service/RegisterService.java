@@ -26,4 +26,13 @@ public class RegisterService {
     public List<RegisterModel> findAll() {
         return registerRepository.findAll();
     }
+    
+    public RegisterModel findByEquipmentId(Integer id){
+        return registerRepository.findByEquipmentId(id);
+    }
+
+    public void delete(Integer id){
+        registerRepository.deleteById(id);
+    }
+
 }
