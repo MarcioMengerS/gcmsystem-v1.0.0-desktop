@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.EquipmentDetailsController">
+   <children>
+      <Text layoutX="43.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Equipamento">
+         <font>
+            <Font name="Arial Bold" size="20.0" />
+         </font></Text>
+      <Text fx:id="idT" disable="true" fill="#c3c3c3" layoutX="549.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Text>
+      <GridPane depthTest="DISABLE" hgap="8.0" layoutX="49.0" layoutY="94.0" prefWidth="523.0">
+        <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+          <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Categoria" />
+            <Label text="Localização" GridPane.columnIndex="2" />
+            <TextField fx:id="locationTF" focusTraversable="false" GridPane.columnIndex="3" />
+            <Label text="Marca" GridPane.rowIndex="1" />
+            <TextField fx:id="brandTF" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Modelo" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="modelTF" focusTraversable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <ComboBox fx:id="categoryCB" focusTraversable="false" prefHeight="25.0" prefWidth="181.0" GridPane.columnIndex="1" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <GridPane fx:id="seriePatrGP" depthTest="DISABLE" hgap="8.0" layoutX="49.0" layoutY="177.0" prefWidth="523.0">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label text="Nº Série" />
+            <TextField fx:id="serieTF" focusTraversable="false" GridPane.columnIndex="1" />
+            <Label text="Patrimônio" GridPane.columnIndex="2" />
+            <TextField fx:id="registrationNumberTF" focusTraversable="false" promptText="Somente números" GridPane.columnIndex="3" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <GridPane fx:id="vehicleGP" depthTest="DISABLE" hgap="8.0" layoutX="49.0" layoutY="177.0" prefWidth="523.0" visible="false">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label text="Prefixo" />
+            <TextField fx:id="prefixTF" focusTraversable="false" promptText="Somente números" GridPane.columnIndex="1" />
+            <TextField fx:id="plateTF" focusTraversable="false" GridPane.columnIndex="3" />
+            <Label text="Placa" GridPane.columnIndex="2" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <GridPane fx:id="vestGP" depthTest="DISABLE" hgap="8.0" layoutX="49.0" layoutY="224.0" prefWidth="523.0" visible="false">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label text="Tamanho" />
+            <TextField fx:id="sizeTF" focusTraversable="false" GridPane.columnIndex="1" />
+            <TextField fx:id="expirationTF" focusTraversable="false" GridPane.columnIndex="3" />
+            <Label text="Validade" GridPane.columnIndex="2" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <GridPane fx:id="gunGP" depthTest="DISABLE" hgap="8.0" layoutX="49.0" layoutY="224.0" prefWidth="523.0" visible="false">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints fillWidth="false" halignment="RIGHT" prefWidth="70.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label text="Tipo" />
+            <TextField fx:id="typeTF" focusTraversable="false" GridPane.columnIndex="1" />
+            <Label text="Calibre" GridPane.columnIndex="2" />
+            <TextField fx:id="caliberTF" focusTraversable="false" GridPane.columnIndex="3" />
+            <Label text="Registro" GridPane.rowIndex="1" />
+            <TextField fx:id="registerTF" focusTraversable="false" promptText="Somente números" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Sinarm" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <TextField fx:id="sinarmTF" focusTraversable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <HBox fx:id="radioHB" alignment="CENTER_LEFT" layoutX="51.0" layoutY="224.0" prefHeight="25.0" prefWidth="257.0" visible="false">
+         <children>
+            <Label prefHeight="17.0" prefWidth="83.0" text="Identificador" />
+            <TextField fx:id="identifierTF" focusTraversable="false" prefHeight="25.0" prefWidth="187.0" promptText="Somente números" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <TextArea fx:id="moreInformTA" focusTraversable="false" layoutX="126.0" layoutY="323.0" prefHeight="61.0" prefWidth="446.0" />
+      <Label layoutX="50.0" layoutY="323.0" prefHeight="40.0" prefWidth="76.0" text="Informações adicionais" textAlignment="CENTER" wrapText="true" />
+      <Button fx:id="updateBTN" focusTraversable="false" layoutX="413.0" layoutY="410.0" mnemonicParsing="false" onAction="#update" prefHeight="25.0" prefWidth="127.0" text="Atualizar" visible="false">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="saveBTN" focusTraversable="false" layoutX="413.0" layoutY="410.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="127.0" text="Salvar">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

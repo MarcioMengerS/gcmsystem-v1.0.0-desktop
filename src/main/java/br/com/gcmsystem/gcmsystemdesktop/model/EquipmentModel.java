@@ -1,5 +1,6 @@
 package br.com.gcmsystem.gcmsystemdesktop.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
@@ -23,12 +24,26 @@ public class EquipmentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String model;
-    private String brand;
-    // private String category;
-    private CategoryEnum category;
-    private Integer registrationNumber; //nºsérie, prefixo, patrimônio
-    private String plate; //Placa Veículo
+    private CategoryEnum category; //categoria
+    private String location;//localização - Transformar em ENUM
+    private String brand;//marca
+    private String model;//modelo
+    private String serie;//nºsérie
+    private Integer registrationNumber; //patrimônio
+    private String moreInform; //mais informações
+    //Veiculos
+    private Integer prefix; //prefixo
+    private String plate; //placa veículo
+    //Coletes
+    private String size; //tamanho - Transformar em ENUM
+    private LocalDate expiratioDate;//validade
+    //Armas
+    private String type; //tipo - Transformar em ENUM
+    private String caliber;//calibre
+    private Integer register; //registro
+    private String sinarm; //sinarm
+    //Radiocomunicador
+    private Integer identifier; //identificador
 
     @OneToMany(mappedBy = "equipment")
     private List<RegisterModel> registrations;

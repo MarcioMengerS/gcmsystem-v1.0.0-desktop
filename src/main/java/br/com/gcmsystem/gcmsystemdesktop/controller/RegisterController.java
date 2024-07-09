@@ -37,6 +37,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -309,7 +310,16 @@ public class RegisterController implements Initializable{
                         setText(null);
 
                     } else {
+
                         FontIcon icon = new FontIcon(FontAwesomeRegular.ARROW_ALT_CIRCLE_DOWN);
+                        //insere dica de ajuda no ícone 
+                        Tooltip tooltip = new Tooltip("Devolver\n material");
+                        tooltip.setStyle(
+                            "-fx-font: normal bold 10 Langdon; "
+                            + "-fx-base: #AE3522; "
+                            + "-fx-text-fill: orange;"
+                        );
+                        Tooltip.install(icon, tooltip);
                         icon.setCursor(javafx.scene.Cursor.HAND);//apresenta como clicavel o icone
                         icon.setIconSize(20);//tamanho icone
                         icon.setIconColor(javafx.scene.paint.Color.BLUE);//cor icone
@@ -321,7 +331,7 @@ public class RegisterController implements Initializable{
                     }
                 }
             };
-            cell.setAlignment(Pos.CENTER);//centraliza itens da célula
+            cell.setAlignment(Pos.CENTER);//centraliza itens na célula
             return cell;
         };
         editColumn.setText("Devolve");

@@ -20,31 +20,7 @@
             <Label layoutX="14.0" layoutY="14.0" text="EQUIPAMENTOS" />
             <HBox alignment="CENTER" layoutX="160.0" layoutY="141.0" prefHeight="60.0" prefWidth="531.0">
                <children>
-                  <Button fx:id="clearButton" centerShape="false" mnemonicParsing="false" onAction="#clear" prefHeight="25.0" prefWidth="140.0" text="Limpar">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets right="-140.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#save" prefHeight="32.0" prefWidth="140.0" text="Salvar">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="updateButton" mnemonicParsing="false" onAction="#update" prefHeight="25.0" prefWidth="140.0" text="Atualizar" visible="false">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="deleteButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#delete" prefHeight="27.0" prefWidth="126.0" text="Excluir" visible="false">
+                  <Button fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Cadastrar equipamento">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -54,16 +30,15 @@
                   </Button>
                </children>
             </HBox>
-          <AnchorPane layoutX="10.0" layoutY="213.0" minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="832.0">
+          <AnchorPane layoutX="29.0" layoutY="214.0" minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="742.0">
                <children>
-                  <TableView fx:id="equipmentTableView" layoutX="1.0" prefHeight="347.0" prefWidth="831.0">
+                  <TableView fx:id="equipmentTableView" layoutX="39.0" prefHeight="346.0" prefWidth="740.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                      <TableColumn fx:id="idColumn" prefWidth="56.0" text="ID" />
-                        <TableColumn fx:id="categoryColumn" prefWidth="201.0" text="Categoria" />
-                        <TableColumn fx:id="registerColumn" prefWidth="106.0" text="Nº Série/Prefixo" />
-                      <TableColumn fx:id="modelColumn" prefWidth="113.0" text="Modelo" />
-                        <TableColumn fx:id="brandColumn" prefWidth="130.0" text="Marca" />
-                        <TableColumn fx:id="plateColumn" prefWidth="113.0" text="Placa" />
+                        <TableColumn fx:id="categoryColumn" prefWidth="187.0" text="Categoria" />
+                        <TableColumn fx:id="registerColumn" prefWidth="162.0" text="Patrimônio" />
+                      <TableColumn fx:id="modelColumn" prefWidth="104.0" text="Modelo" />
+                        <TableColumn fx:id="prefixColumn" prefWidth="88.0" text="Prefixo" />
+                        <TableColumn fx:id="plateColumn" prefWidth="96.0" text="Placa" />
                     </columns>
                   </TableView>
                </children>

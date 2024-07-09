@@ -37,8 +37,7 @@
                   <TableColumn fx:id="noteColumn" prefWidth="97.0" text="OBS." />
               </columns>
             </TableView>
-            <Button fx:id="loanButton" layoutX="725.0" layoutY="62.0" mnemonicParsing="false" onAction="#loan" prefHeight="43.0" prefWidth="136.0" text="Emprestar" />
-            <Button layoutX="725.0" layoutY="117.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="136.0" text="Devolver" />
+            <Button fx:id="loanButton" contentDisplay="CENTER" layoutX="721.0" layoutY="101.0" mnemonicParsing="false" onAction="#loan" prefHeight="43.0" prefWidth="136.0" text="Emprestar" />
             <ComboBox fx:id="gcmComboBox" editable="true" layoutX="57.0" layoutY="84.0" prefHeight="25.0" prefWidth="113.0" />
             <ComboBox fx:id="equipmCatComboBox" layoutX="191.0" layoutY="84.0" onAction="#searchByCategory" prefHeight="25.0" prefWidth="143.0" />
             <ComboBox fx:id="equipmNumComboBox" layoutX="353.0" layoutY="85.0" prefHeight="25.0" prefWidth="128.0" />

@@ -1,16 +1,22 @@
 package br.com.gcmsystem.gcmsystemdesktop.controller;
 
+import java.io.IOException;
+
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -19,10 +25,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
-@Component
+@Controller
 public class EquipamentoController {
+    @Autowired
+    private ApplicationContext context;  // Injeta o contexto do Spring
     private Integer id;
     private EquipmentModel item;
 
@@ -34,23 +46,22 @@ public class EquipamentoController {
     @FXML
     private TextField idField, modelField, brandField, numField, plateField;
     @FXML
-    private Button saveButton, updateButton, deleteButton, clearButton;
+    private Button saveButton;
     @FXML
     private Label lblTotal, lblWarning;
     @FXML
     private TableView<EquipmentModel> equipmentTableView;
     @FXML
-    private TableColumn<EquipmentModel, Integer> idColumn, registerColumn;
+    private TableColumn<EquipmentModel, Integer> registerColumn;
     @FXML
-    private TableColumn<EquipmentModel, String> modelColumn, brandColumn, plateColumn; //categoryColumn;
+    private TableColumn<EquipmentModel, String> modelColumn, prefixColumn, plateColumn;
     @FXML
     private TableColumn<EquipmentModel, CategoryEnum> categoryColumn;
 
     public void initialize(){
         // Método usado para carregar e exibir a lista de equipamentos
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id")); //propriedades do objeto EquipmentModel
         modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
-        brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
+        prefixColumn.setCellValueFactory(new PropertyValueFactory<>("prefix"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         registerColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
         plateColumn.setCellValueFactory(new PropertyValueFactory<>("plate"));
@@ -69,52 +80,95 @@ public class EquipamentoController {
                     numField.setText(String.valueOf(item.getRegistrationNumber()));
                     plateField.setText(item.getPlate());
 
-                    saveButton.setVisible(false);
-                    clearButton.setVisible(true);
-                    updateButton.setVisible(true);
-                    deleteButton.setVisible(true);
                     lblWarning.setVisible(false);
                 }
             });
-        addButtonToTable();
+        saveButton.setOnAction(event->{
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/details-equip.fxml"));
+                loader.setControllerFactory(context::getBean);  // Usa o contexto do Spring para criar o controlador
+                Parent parent = loader.load();
+
+                Stage stage = new Stage();
+                stage.setScene(new Scene(parent));
+                stage.initStyle(StageStyle.UTILITY);
+                stage.show();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        addIconToTable();
         categoryComboBox.getItems().setAll(CategoryEnum.values());
     }
     //Adiciona botão na última coluna da Tabela
-    private void addButtonToTable() {
-        TableColumn<EquipmentModel, Void> actionColumn = new TableColumn<>();
+    private void addIconToTable() {
+        TableColumn<EquipmentModel, String> actionColumn = new TableColumn<>();
 
-        Callback<TableColumn<EquipmentModel, Void>, TableCell<EquipmentModel, Void>> cellFactory = new Callback<TableColumn<EquipmentModel, Void>, TableCell<EquipmentModel, Void>>() {
-            @Override
-            public TableCell<EquipmentModel, Void> call(TableColumn<EquipmentModel, Void> param) {
-                final TableCell<EquipmentModel, Void> cell = new TableCell<EquipmentModel, Void>() {
-                    private Button btn = new Button("Detalhes");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            EquipmentModel data = getTableView().getItems().get(getIndex());
-                            Alert alert = new Alert(AlertType.INFORMATION);
-                            alert.setTitle("Info equipamento");
-                            alert.setHeaderText("Informações complementares");
-                            alert.setContentText("referencia ID = " + data.getId() );
+        Callback<TableColumn<EquipmentModel, String>, TableCell<EquipmentModel, String>> cellFactory = (TableColumn<EquipmentModel, String> param) -> {
 
-                            alert.showAndWait(); 
+            final TableCell<EquipmentModel, String> cell = new TableCell<EquipmentModel, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    }else{
+                        EquipmentModel data = getTableView().getItems().get(getIndex());
+                        
+                        FontIcon iconPen = new FontIcon(FontAwesomeSolid.PEN);
+                        iconPen.setCursor(javafx.scene.Cursor.HAND);//apresenta como clicavel o icone
+                        iconPen.setIconSize(18);//tamanho icone
+                        iconPen.setIconColor(javafx.scene.paint.Color.BLUE);//cor icone
+
+                        FontIcon iconTrash = new FontIcon(FontAwesomeSolid.TRASH);
+                        iconTrash.setCursor(javafx.scene.Cursor.HAND);//apresenta como clicavel o icone
+                        iconTrash.setIconSize(18);//tamanho icone
+                        iconTrash.setIconColor(javafx.scene.paint.Color.RED);//cor icone
+
+                        FontIcon iconEye = new FontIcon(FontAwesomeSolid.EYE);
+                        iconEye.setCursor(javafx.scene.Cursor.HAND);//apresenta como clicavel o icone
+                        iconEye.setIconSize(18);//tamanho icone
+                        iconEye.setIconColor(javafx.scene.paint.Color.GREEN);//cor icone
+
+                        HBox boxIcon = new HBox(iconEye, iconPen,iconTrash);
+                        boxIcon.setStyle("-fx-alignment:center");
+                        HBox.setMargin(iconEye, new Insets(2, 5, 0, 0));
+                        HBox.setMargin(iconPen, new Insets(2, 5, 0, 5));
+                        HBox.setMargin(iconTrash, new Insets(2, 0, 0, 5));
+
+                        setGraphic(boxIcon);//insere icone na coluna
+
+                        iconPen.setOnMouseClicked((MouseEvent event)->{
+                            try {
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/details-equip.fxml"));
+                                loader.setControllerFactory(context::getBean);  // Usa o contexto do Spring para criar o controlador
+                                Parent parent = loader.load();
+                
+                                EquipmentDetailsController equipmentDetailsController = loader.getController();
+                                // Envia objeto 'data' para a classe EquipmentDetailsController
+                                equipmentDetailsController.setEquipmentModel(data);
+                
+                                Stage stage = new Stage();
+                                stage.setScene(new Scene(parent));
+                                stage.initStyle(StageStyle.UTILITY);
+                                stage.show();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                        iconTrash.setOnMouseClicked((MouseEvent event)->{
+                            delete();
                         });
                     }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if( empty ) {
-                            setGraphic(null);
-                        } else {
-                            EquipmentModel data = getTableView().getItems().get(getIndex());
-                            btn.setText(btn.getText() + " " + data.getId() );
-                            setGraphic(btn);
-                        }
-                    }
-                };
-                return cell;
-            }
+                }
+            };
+            return cell;
         };
-        actionColumn.setText("Ação");
+        actionColumn.setText("Ações");
+        actionColumn.setMinWidth(80);//largura minima da coluna
         actionColumn.setCellFactory(cellFactory);
         equipmentTableView.getColumns().add(actionColumn);
     }
@@ -128,55 +182,8 @@ public class EquipamentoController {
         lblTotal.setText(String.valueOf(equipmentTableView.getItems().size()));
     }
 
-    @FXML
-    public void save(){
-        if(!numField.getText().trim().isEmpty()){
-            EquipmentModel equipmentModel = new EquipmentModel();
-            equipmentModel.setBrand(brandField.getText());
-            equipmentModel.setModel(modelField.getText());
-            equipmentModel.setRegistrationNumber(Integer.parseInt(numField.getText()));
-            equipmentModel.setPlate(plateField.getText());
-            equipmentModel.setCategory(categoryComboBox.getSelectionModel().getSelectedItem());
-            // equipmentModel.setCategory(categoryComboBox.getSelectionModel().getSelectedItem().toString());
-            equipmentService.save(equipmentModel);
-            list();
-            clear();
-        }else{
-            lblWarning.setVisible(true);
-        }
-    }
-
-    @FXML
-    public void update(){
-        item.setCategory(categoryComboBox.getValue());
-        item.setModel(modelField.getText());
-        item.setBrand(brandField.getText());
-        item.setRegistrationNumber(Integer.parseInt(numField.getText()));
-        item.setPlate(plateField.getText());
-
-        equipmentService.save(item);
-        list();
-    }
-
-    @FXML
     public void delete(){
         equipmentService.deleteById(id);
-        clear();
         list();
-    }
-
-    //Método que limpa os campos id, nome, email
-    @FXML
-    public void clear(){
-        idField.clear();
-        modelField.clear();
-        brandField.clear();
-        numField.clear();
-        plateField.clear();
-
-        saveButton.setVisible(true);
-        clearButton.setVisible(false);
-        updateButton.setVisible(false);
-        deleteButton.setVisible(false);
     }
 }

@@ -1,13 +1,15 @@
 package br.com.gcmsystem.gcmsystemdesktop.enums;
 
 public enum CategoryEnum {
-    COLETE,
     ALGEMA,
+    ARMA_LETAL,
     ARMA_MENOS_LETAL,
-    ESPARGIDOR,
-    RADIO_COMUNICADOR,
-    LANTERNA,
     BASTAO,
     CAMERA_PORTATIL,
+    COLETE,
+    ESPARGIDOR,
+    LANTERNA,
+    RADIO_COMUNICADOR,
+    MUNICAO,
     VEICULO
 }
