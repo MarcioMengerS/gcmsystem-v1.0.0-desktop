@@ -116,7 +116,7 @@ public class EquipamentoController {
         filterCatCB.getItems().setAll(CategoryEnum.values());
         // Configurar evento de busca
         searchTF.textProperty().addListener((observable, oldValue, newValue) -> {
-                filterTable(newValue.toLowerCase());
+            filterTable(newValue.toLowerCase());
         });
 
         //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa

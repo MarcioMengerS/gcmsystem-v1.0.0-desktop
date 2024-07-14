@@ -21,6 +21,11 @@ Resultado do building realizado com sucesso:
 >BUILD SUCCESS 
 >Total time:  36.879 s  
 >Finished at: 2024-07-02T15:29:24-03:00  
+>Tests run: 1, Failures: 0, Errors: 0, Skipped: 0  
+
+>BUILD SUCCESS 
+>Total time:  41.223 s 
+>Finished at: 2024-07-14T10:37:40-03:00 
 >Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
 
 #### Testar Pacote JAR
@@ -31,3 +36,12 @@ WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed mod
 
 >Dia 02/07/2024 apresentou o seguinte aviso:  
 WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @54c25dd0'
+
+>Dia 14/07/2024 apresentou o seguinte aviso:  
+WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @54c25dd0'  
+
+Ao executar aplicativo, usar o comando Maven para garantir que todas as dependências, incluindo o ControlsFX, sejam carregadas corretamente: **mvn javafx:run** 
+
+>[INFO] BUILD SUCCESS  
+[INFO] Total time:  55.722 s  
+[INFO] Finished at: 2024-07-14T16:55:09-03:00  
