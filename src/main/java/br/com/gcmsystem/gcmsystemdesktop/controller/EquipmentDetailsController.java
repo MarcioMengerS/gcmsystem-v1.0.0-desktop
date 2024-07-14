@@ -1,8 +1,6 @@
 package br.com.gcmsystem.gcmsystemdesktop.controller;
 
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,10 @@ import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -42,7 +42,7 @@ public class EquipmentDetailsController implements Initializable{
     @FXML
     private ComboBox<CategoryEnum> categoryCB;//categoria
     @FXML
-    private TextField expirationTF;//data validade
+    private DatePicker expirationDP;//data validade
     @FXML
     private Text idT;//id
     @FXML
@@ -70,7 +70,7 @@ public class EquipmentDetailsController implements Initializable{
     @FXML
     private TextField typeTF;// tipo
     @FXML
-    private GridPane vehicleGP, vestGP, gunGP, seriePatrGP;//veiculo, colete, arma e Serie/Patrimonio
+    private GridPane vehicleGP, vestGP, gunGP, seriePatrGP, principalGP;//veiculo, colete, arma e Serie/Patrimonio
     @FXML
     private Button updateBTN, saveBTN;
 
@@ -155,8 +155,7 @@ public class EquipmentDetailsController implements Initializable{
                 case CategoryEnum.COLETE:
                     vestGP.setVisible(true);
                     sizeTF.setText(equipmentModel.getSize());
-                    String response = (equipmentModel.getExpiratioDate()!=null)?equipmentModel.getExpiratioDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")):"";
-                    expirationTF.setText(response);
+                    expirationDP.setValue(equipmentModel.getExpiratioDate());
                     break;
                 case CategoryEnum.ARMA_LETAL:
                     gunGP.setVisible(true);
@@ -168,6 +167,44 @@ public class EquipmentDetailsController implements Initializable{
                 default:
                     break;
             }
+        }
+    }
+
+    public void viewEquipment(EquipmentModel eM) {
+        setEquipmentModel(eM);
+        updateBTN.setVisible(false);
+
+        principalGP.getChildren().forEach(this::disableEditing);
+        seriePatrGP.getChildren().forEach(this::disableEditing);
+        vehicleGP.getChildren().forEach(this::disableEditing);
+        vestGP.getChildren().forEach(this::disableEditing);
+        gunGP.getChildren().forEach(this::disableEditing);
+        radioHB.getChildren().forEach(this::disableEditing);
+        disableEditing(moreInformTA);
+        disableEditing(expirationDP);
+    }
+
+    private void disableEditing(Node node) {
+        if (node instanceof TextField) {
+            ((TextField) node).setEditable(false);
+            ((TextField) node).setFocusTraversable(false);
+            ((TextField) node).setMouseTransparent(true);
+            ((TextField) node).getStyleClass().add("no-border");
+        } else if (node instanceof TextArea) {
+            ((TextArea) node).setEditable(false);
+            ((TextArea) node).setFocusTraversable(false);
+            ((TextArea) node).setMouseTransparent(true);
+            ((TextArea) node).getStyleClass().add("no-border");
+        } else if (node instanceof ComboBox) {
+            ((ComboBox<?>) node).setEditable(false);
+            ((ComboBox<?>) node).setMouseTransparent(true);
+            ((ComboBox<?>) node).setFocusTraversable(false);
+            ((ComboBox<?>) node).getStyleClass().add("no-border");
+        }else if (node instanceof DatePicker) {
+            ((DatePicker) node).setEditable(false);
+            ((DatePicker) node).setMouseTransparent(true);
+            ((DatePicker) node).setFocusTraversable(false);
+            ((DatePicker) node).getStyleClass().add("no-border");
         }
     }
 
@@ -183,33 +220,7 @@ public class EquipmentDetailsController implements Initializable{
             equipmentModel.setBrand(brandTF.getText());
             CategoryEnum catSelec = categoryCB.getValue();
             equipmentModel.setCategory(categoryCB.getValue());
-            // switch (catSelec) {
-            //     case VEICULO:
-            //         equipmentModel.setPlate(plateTF.getText());
-            //         if(!prefixTF.getText().trim().isEmpty())
-            //             equipmentModel.setPrefix(Integer.parseInt(prefixTF.getText()));
-            //         break;
-            //     case COLETE:
-            //         equipmentModel.setSize(sizeTF.getText());
-            //         String dateString  = expirationTF.getText();
-            //         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            //         LocalDate localDate = LocalDate.parse(dateString, formatter);
-            //         equipmentModel.setExpiratioDate(localDate);//texto em data
-            //         break;
-            //     case ARMA_LETAL:
-            //         equipmentModel.setType(typeTF.getText());
-            //         equipmentModel.setCaliber(caliberTF.getText());
-            //         equipmentModel.setSinarm(sinarmTF.getText());
-            //         if(!registerTF.getText().trim().isEmpty())
-            //             equipmentModel.setRegister(Integer.parseInt(registerTF.getText()));
-            //         break;
-            //     case RADIO_COMUNICADOR:
-            //         if(!identifierTF.getText().trim().isEmpty())
-            //             equipmentModel.setIdentifier(Integer.parseInt(identifierTF.getText()));
-            //         break;
-            //     default:
-            //         break;
-            // }
+  
             equipmentModel = enableFields(catSelec, equipmentModel);
             equipmentService.save(equipmentModel);
             //atualiza lista na pagina principal do equipamento
@@ -232,33 +243,7 @@ public class EquipmentDetailsController implements Initializable{
             eModel.setRegistrationNumber(Integer.parseInt(registrationNumberTF.getText()));
         CategoryEnum catSelec = categoryCB.getSelectionModel().getSelectedItem();
         eModel.setCategory(catSelec);
-        // switch (catSelec) {
-        //     case VEICULO:
-        //         eModel.setPlate(plateTF.getText());
-        //         if(!prefixTF.getText().trim().isEmpty())
-        //             eModel.setPrefix(Integer.parseInt(prefixTF.getText()));
-        //         break;
-        //     case COLETE:
-        //         eModel.setSize(sizeTF.getText());
-        //         String dateString  = expirationTF.getText();
-        //         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        //         LocalDate localDate = LocalDate.parse(dateString, formatter);
-        //         eModel.setExpiratioDate(localDate);//texto em data
-        //         break;
-        //     case ARMA_LETAL:
-        //         eModel.setType(typeTF.getText());
-        //         eModel.setCaliber(caliberTF.getText());
-        //         eModel.setSinarm(sinarmTF.getText());
-        //         if(!registerTF.getText().trim().isEmpty())
-        //             eModel.setRegister(Integer.parseInt(registerTF.getText()));
-        //         break;
-        //     case RADIO_COMUNICADOR:
-        //         if(!identifierTF.getText().trim().isEmpty())
-        //             eModel.setIdentifier(Integer.parseInt(identifierTF.getText()));
-        //         break;
-        //     default:
-        //         break;
-        // }
+        
         eModel = enableFields(catSelec, eModel);
         equipmentService.save(eModel);
         //atualiza lista na pagina principal do equipamento
@@ -276,11 +261,8 @@ public class EquipmentDetailsController implements Initializable{
                     equipMo.setPrefix(Integer.parseInt(prefixTF.getText()));
                 break;
             case COLETE:
-                equipMo.setSize(sizeTF.getText());
-                String dateString  = expirationTF.getText();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate localDate = LocalDate.parse(dateString, formatter);
-                equipMo.setExpiratioDate(localDate);//texto em data
+                equipMo.setSize(sizeTF.getText());                
+                equipMo.setExpiratioDate(expirationDP.getValue());
                 break;
             case ARMA_LETAL:
                 equipMo.setType(typeTF.getText());

@@ -24,6 +24,7 @@ public class HomeController {
 
     @FXML
     private void initialize() {
+        equipamentoButton.setDisable(true);//disabilita na inicialização pois é já está selecionado
         equipamentoButton.setOnAction(event -> {
             mainapp.showEquipamento();
 

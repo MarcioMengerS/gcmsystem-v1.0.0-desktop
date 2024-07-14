@@ -9,17 +9,17 @@
    <left>
       <VBox alignment="CENTER" prefHeight="600.0" prefWidth="200.0" BorderPane.alignment="BOTTOM_LEFT">
          <children>
-            <Button fx:id="equipamentoButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="Equipamento" textAlignment="CENTER">
+            <Button fx:id="equipamentoButton" focusTraversable="false" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="Equipamento" textAlignment="CENTER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button fx:id="gcmButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="GCM">
+            <Button fx:id="gcmButton" focusTraversable="false" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="GCM">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="registroButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="Cautela">
+            <Button fx:id="registroButton" focusTraversable="false" mnemonicParsing="false" prefHeight="37.0" prefWidth="125.0" text="Cautela">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>

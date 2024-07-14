@@ -146,9 +146,8 @@ public class GcmController{
     }
 
     public void processResult(String result){
+        
         tagField.setText(result);
-        // result = UsbMonitor.monitorarUSB();//le cartão RFID de forma sincrona
-        System.out.println(result);
         cardButton.setDisable(false);
     }
 }

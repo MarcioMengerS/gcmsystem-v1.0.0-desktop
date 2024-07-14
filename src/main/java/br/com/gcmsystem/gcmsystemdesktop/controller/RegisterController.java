@@ -82,7 +82,7 @@ public class RegisterController implements Initializable{
 
         ///////// início autocomplete gcmComboBox ////////////
         ObservableList<String> items = FXCollections.observableArrayList(listAllGcm());
-        gcmComboBox.getItems().setAll(items);
+        // gcmComboBox.getItems().setAll(items);
         TextFields.bindAutoCompletion(gcmComboBox.getEditor(), items);
         /////////// fim autocomplete gcmComboBox ////////////
 
@@ -284,8 +284,8 @@ public class RegisterController implements Initializable{
             System.out.println("categoria sem equipamento cadastrado");
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Lista vazia");
-            alert.setHeaderText("Informações complementares");
-            alert.setContentText("Não foi cadastrados equipamentos\n para categoria selecionada");
+            alert.setHeaderText("Informação importante");
+            alert.setContentText("Não foram cadastrados equipamentos\n para a categoria selecionada");
 
             alert.showAndWait();
             return;

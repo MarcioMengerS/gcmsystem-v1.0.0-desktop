@@ -5,7 +5,7 @@ public enum CategoryEnum {
     ARMA_LETAL,
     ARMA_MENOS_LETAL,
     BASTAO,
-    CAMERA_PORTATIL,
+    CAMERA_CORPORAL,
     COLETE,
     ESPARGIDOR,
     LANTERNA,

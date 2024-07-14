@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.exception.ObjectNotFound;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.repository.EquipmentRepository;
 
@@ -24,18 +25,26 @@ public class EquipmentService {
     }
 
     public EquipmentModel findById(Integer id){
-        return equipmentRepository.findById(id).get();//tratar exceção
+        return equipmentRepository.findById(id).get();//tratar exceção obj. nulo
     }
 
     public void deleteById(Integer id){
-        equipmentRepository.deleteById(id);
-    }
-
-    public EquipmentModel findByRegistrationNumber(Integer id){
-        return equipmentRepository.findByRegistrationNumber(id);
+        equipmentRepository.delete(equipmentRepository.findById(id).orElseThrow(()->new ObjectNotFound(id)));
     }
 
     public List<EquipmentModel> findByCategory(CategoryEnum category){
         return equipmentRepository.findByCategory(category);
+    }
+
+    public EquipmentModel findBySerie(String serie){
+        return equipmentRepository.findBySerie(serie).orElseThrow(()->new ObjectNotFound());
+    }
+
+    public EquipmentModel findByRegistrationNumber(Integer rNum){
+        return equipmentRepository.findByRegistrationNumber(rNum);//tratar exceçao obj. nulo
+    }
+
+    public EquipmentModel findByPrefix(Integer prefix){
+        return equipmentRepository.findByPrefix(prefix);//tratar exceçao obj. nulo
     }
 }

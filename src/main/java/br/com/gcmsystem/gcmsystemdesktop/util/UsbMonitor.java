@@ -18,15 +18,16 @@ public class UsbMonitor {
     private static boolean leituraConcluida = true;
     private static ScheduledExecutorService scheduler;
     private static final Object lock = new Object();
-
+    private static String readData= "";
     // Método assíncrono
     public static Future<String> monitorarUSBAsync() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         return executor.submit(() -> monitorarUSB());
     }
-
+  
     // Método síncrono
     public static String monitorarUSB() {
+
         if (!leituraConcluida) {
             System.out.println("Leitura já está em andamento.");
             return "Leitura já está em andamento.";
@@ -36,14 +37,12 @@ public class UsbMonitor {
         leituraConcluida = false;
         scheduler = Executors.newScheduledThreadPool(1);
 
-        StringBuilder result = new StringBuilder();//retorno positiva ou não da leitura do cartão
-
         new Thread(() -> {
             while (!leituraConcluida) {
                 if (usbPort == null || !usbPort.isOpen()) {
                     SerialPort[] portNames = SerialPort.getCommPorts();
                     for (SerialPort portName : portNames) {
-                        if (portName.getProductID() == 29987) {
+                        if (portName.getProductID() == 29987) {//numero do productId do Esp32
                             usbPort = SerialPort.getCommPort(portName.getSystemPortName());
                             System.out.println("Serial Number: " + portName.getSerialNumber());
                             usbPort.setBaudRate(9600);
@@ -77,11 +76,10 @@ public class UsbMonitor {
 
                                         System.out.println("Bytes no Buffer: " + readBuffer.length);
                                         if (readBuffer.length == 10) {
-                                            int numRead = usbPort.readBytes(readBuffer, 10);
-                                            String readData = new String(readBuffer).trim();
+                                            int numRead = usbPort.readBytes(readBuffer, 8);
+                                            readData = new String(readBuffer).trim();
                                             System.out.println("Leitura de " + numRead + " bytes: " + readData);
 
-                                            result.append(readData); //envia resultado da leitura do cartão
                                             leituraHabilitada = false;
                                             leituraConcluida = true;
                                             usbPort.closePort();
@@ -99,7 +97,7 @@ public class UsbMonitor {
                         scheduler.schedule(() -> {
                             if (leituraHabilitada) {
                                 System.out.println("Tempo limite de 5 segundos atingido. Encerrando leitura.");
-                                result.append("Tempo limite de 5 segundos atingido."); //envia resultado de tempo limite expirado
+                                readData ="Tempo excedido (5s.)";
                                 leituraHabilitada = false;
                                 leituraConcluida = true;
                                 if (usbPort.isOpen()) {
@@ -116,7 +114,7 @@ public class UsbMonitor {
                         usbPort.closePort();
                         deviceConnected = false;
                         leituraConcluida = true;
-                        result.append("Falha ao abrir a porta serial."); //Envia porta sem acesso
+                        readData ="Leitor desconectado";
                         synchronized (lock) {
                             lock.notify();
                         }
@@ -143,6 +141,8 @@ public class UsbMonitor {
             }
         }
 
-        return result.toString();
+        String resultadoFinal = readData;
+        readData = "";//limpa variavel garantir proxima chamada
+        return resultadoFinal;
     }
 }

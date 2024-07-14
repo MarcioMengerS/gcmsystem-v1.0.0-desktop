@@ -4,13 +4,16 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.EquipamentoController">
@@ -18,27 +21,15 @@
       <Pane prefHeight="600.0" prefWidth="850.0" BorderPane.alignment="CENTER">
          <children>
             <Label layoutX="14.0" layoutY="14.0" text="EQUIPAMENTOS" />
-            <HBox alignment="CENTER" layoutX="160.0" layoutY="141.0" prefHeight="60.0" prefWidth="531.0">
-               <children>
-                  <Button fx:id="saveButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Cadastrar equipamento">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
           <AnchorPane layoutX="29.0" layoutY="214.0" minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="742.0">
                <children>
                   <TableView fx:id="equipmentTableView" layoutX="39.0" prefHeight="346.0" prefWidth="740.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                        <TableColumn fx:id="categoryColumn" prefWidth="187.0" text="Categoria" />
-                        <TableColumn fx:id="registerColumn" prefWidth="162.0" text="Patrimônio" />
-                      <TableColumn fx:id="modelColumn" prefWidth="104.0" text="Modelo" />
-                        <TableColumn fx:id="prefixColumn" prefWidth="88.0" text="Prefixo" />
-                        <TableColumn fx:id="plateColumn" prefWidth="96.0" text="Placa" />
+                        <TableColumn fx:id="categoryColumn" prefWidth="171.0" text="Categoria" />
+                      <TableColumn fx:id="modelColumn" prefWidth="109.0" text="Modelo" />
+                        <TableColumn fx:id="registerColumn" prefWidth="99.0" text="Patrimônio" />
+                        <TableColumn fx:id="serieColumn" prefWidth="111.0" text="Nº Série" />
+                        <TableColumn fx:id="prefixColumn" prefWidth="103.0" text="Prefixo" />
                     </columns>
                   </TableView>
                </children>
@@ -52,7 +43,7 @@
             <TextField fx:id="modelField" layoutX="85.0" layoutY="102.0" prefHeight="25.0" prefWidth="127.0" />
             <TextField fx:id="numField" layoutX="329.0" layoutY="101.0" prefHeight="25.0" prefWidth="140.0" />
             <TextField fx:id="plateField" layoutX="519.0" layoutY="101.0" prefHeight="25.0" prefWidth="87.0" />
-            <Label fx:id="lblWarning" layoutX="549.0" layoutY="172.0" prefHeight="42.0" prefWidth="284.0" text="Insira informações solicitadas" textFill="#d00808" visible="false">
+            <Label fx:id="lblWarning" layoutX="519.0" layoutY="123.0" prefHeight="42.0" prefWidth="284.0" text="Insira informações solicitadas" textFill="#d00808" visible="false">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>
@@ -65,7 +56,33 @@
             </Label>
             <Label layoutX="229.0" layoutY="108.0" text="Nº Série/Prefixo" />
             <Label layoutX="483.0" layoutY="106.0" text="Placa" />
-            <ComboBox fx:id="categoryComboBox" layoutX="86.0" layoutY="58.0" prefHeight="25.0" prefWidth="191.0" promptText="Tipo" />
+            <ComboBox fx:id="categoryComboBox" layoutX="86.0" layoutY="58.0" prefHeight="25.0" prefWidth="191.0" />
+            <Button fx:id="saveButton" layoutX="601.0" layoutY="170.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Adicionar Equipamento">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <VBox layoutX="36.0" layoutY="144.0" prefHeight="59.0" prefWidth="85.0" spacing="3.0">
+               <children>
+                  <RadioButton fx:id="serieRB" mnemonicParsing="false" selected="true" text="Serie">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="search" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="registrationNumberRB" mnemonicParsing="false" text="Patrimonio" toggleGroup="$search" />
+                  <RadioButton fx:id="prefixRB" mnemonicParsing="false" text="Prefixo" toggleGroup="$search" />
+               </children>
+            </VBox>
+            <ComboBox fx:id="filterCatCB" layoutX="350.0" layoutY="161.0" onAction="#filterTableCategory" prefWidth="150.0" promptText="filtrar por categoria" />
+            <HBox fx:id="searchHB" alignment="CENTER_LEFT" layoutX="122.0" layoutY="160.0" prefHeight="28.0" prefWidth="182.0">
+               <children>
+                  <TextField fx:id="searchTF" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="142.0" promptText="Pesquisar">
+                     <HBox.margin>
+                        <Insets right="3.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
          </children>
       </Pane>
    </center>
