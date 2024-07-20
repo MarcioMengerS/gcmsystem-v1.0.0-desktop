@@ -51,70 +51,78 @@ public class UsbMonitor {
                             usbPort.setParity(SerialPort.NO_PARITY);
                         }
                     }
+                    if (usbPort != null) {
+                        if (usbPort.openPort()) {
+                            System.out.println("Porta serial aberta com sucesso.");
+                            deviceConnected = true;
 
-                    if (usbPort.openPort()) {
-                        System.out.println("Porta serial aberta com sucesso.");
-                        deviceConnected = true;
+                            usbPort.addDataListener(new SerialPortDataListener() {
+                                @Override
+                                public int getListeningEvents() {
+                                    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE | SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
+                                }
 
-                        usbPort.addDataListener(new SerialPortDataListener() {
-                            @Override
-                            public int getListeningEvents() {
-                                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE | SerialPort.LISTENING_EVENT_PORT_DISCONNECTED;
-                            }
+                                @Override
+                                public void serialEvent(SerialPortEvent event) {
+                                    if (event.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
+                                        System.out.println("Módulo ESP32+RFID desconectado.");
+                                        deviceConnected = false;
+                                        usbPort.closePort();
 
-                            @Override
-                            public void serialEvent(SerialPortEvent event) {
-                                if (event.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
-                                    System.out.println("Módulo ESP32+RFID desconectado.");
-                                    deviceConnected = false;
-                                    usbPort.closePort();
+                                    } else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
+                                        if (leituraHabilitada) {
+                                            System.out.println("Módulo disponível para leitura");
+                                            byte[] readBuffer = new byte[usbPort.bytesAvailable()];
 
-                                } else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
-                                    if (leituraHabilitada) {
-                                        System.out.println("Módulo disponível para leitura");
-                                        byte[] readBuffer = new byte[usbPort.bytesAvailable()];
+                                            System.out.println("Bytes no Buffer: " + readBuffer.length);
+                                            if (readBuffer.length == 10) {
+                                                int numRead = usbPort.readBytes(readBuffer, 8);
+                                                readData = new String(readBuffer).trim();
+                                                System.out.println("Leitura de " + numRead + " bytes: " + readData);
 
-                                        System.out.println("Bytes no Buffer: " + readBuffer.length);
-                                        if (readBuffer.length == 10) {
-                                            int numRead = usbPort.readBytes(readBuffer, 8);
-                                            readData = new String(readBuffer).trim();
-                                            System.out.println("Leitura de " + numRead + " bytes: " + readData);
-
-                                            leituraHabilitada = false;
-                                            leituraConcluida = true;
-                                            usbPort.closePort();
-                                            System.out.println("Leitura concluída e porta serial fechada.");
-                                            scheduler.shutdownNow();
-                                            synchronized (lock) {
-                                                lock.notify();
+                                                leituraHabilitada = false;
+                                                leituraConcluida = true;
+                                                usbPort.closePort();
+                                                System.out.println("Leitura concluída e porta serial fechada.");
+                                                scheduler.shutdownNow();
+                                                synchronized (lock) {
+                                                    lock.notify();
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        });
+                            });
 
-                        scheduler.schedule(() -> {
-                            if (leituraHabilitada) {
-                                System.out.println("Tempo limite de 5 segundos atingido. Encerrando leitura.");
-                                readData ="Tempo excedido (5s.)";
-                                leituraHabilitada = false;
-                                leituraConcluida = true;
-                                if (usbPort.isOpen()) {
-                                    usbPort.closePort();
+                            scheduler.schedule(() -> {
+                                if (leituraHabilitada) {
+                                    System.out.println("Tempo limite de 5 segundos atingido. Encerrando leitura.");
+                                    readData ="Tempo excedido (5s.)";
+                                    leituraHabilitada = false;
+                                    leituraConcluida = true;
+                                    if (usbPort.isOpen()) {
+                                        usbPort.closePort();
+                                    }
+                                    System.out.println("Porta serial fechada após timeout.");
+                                    synchronized (lock) {
+                                        lock.notify();
+                                    }
                                 }
-                                System.out.println("Porta serial fechada após timeout.");
-                                synchronized (lock) {
-                                    lock.notify();
-                                }
+                            }, 5, TimeUnit.SECONDS); //definido tempo de 5 segundos de leitura do cratão
+                        } else {
+                            System.err.println("Falha ao abrir a porta serial.");
+                            usbPort.closePort();
+                            deviceConnected = false;
+                            leituraConcluida = true;
+                            readData ="Leitor desconectado";
+                            synchronized (lock) {
+                                lock.notify();
                             }
-                        }, 5, TimeUnit.SECONDS); //definido tempo de 5 segundos de leitura do cratão
-                    } else {
-                        System.err.println("Falha ao abrir a porta serial.");
-                        usbPort.closePort();
-                        deviceConnected = false;
+                        }
+                    }else {
+                        System.err.println("Nenhuma porta serial correspondente ao ProductID encontrada.");
                         leituraConcluida = true;
-                        readData ="Leitor desconectado";
+                        readData = "Leitor RFID não encontrado";
                         synchronized (lock) {
                             lock.notify();
                         }
@@ -142,7 +150,7 @@ public class UsbMonitor {
         }
 
         String resultadoFinal = readData;
-        readData = "";//limpa variavel garantir proxima chamada
+        readData = ""; //limpa variavel para garantir proxima chamada
         return resultadoFinal;
     }
 }

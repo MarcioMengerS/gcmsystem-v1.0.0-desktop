@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -35,7 +36,7 @@ public class GcmsystemdesktopApplication extends Application{
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.getIcons().add(new Image("images/gcm.png"));
-		this.primaryStage.setTitle("GCMSystem");
+		this.primaryStage.setTitle("GCMSystem v0.0.1");
 
 		initRootLayout();
 		showHome();
@@ -126,7 +127,16 @@ public class GcmsystemdesktopApplication extends Application{
         }
 	}
 
-	// public EquipamentoController getEquipamentoController() {
-    //     return equipamentoController;
-    // }
+    public void showHistoric() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(GcmsystemdesktopApplication.class.getResource("/fxml/historic.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            AnchorPane historicPane = loader.load();
+            rootLayout.setCenter(historicPane);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 }

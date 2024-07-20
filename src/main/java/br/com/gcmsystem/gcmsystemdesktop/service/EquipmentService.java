@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
-import br.com.gcmsystem.gcmsystemdesktop.exception.ObjectNotFound;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.repository.EquipmentRepository;
 
@@ -29,7 +28,7 @@ public class EquipmentService {
     }
 
     public void deleteById(Integer id){
-        equipmentRepository.delete(equipmentRepository.findById(id).orElseThrow(()->new ObjectNotFound(id)));
+        equipmentRepository.delete(equipmentRepository.findById(id).orElseThrow());
     }
 
     public List<EquipmentModel> findByCategory(CategoryEnum category){
@@ -37,7 +36,7 @@ public class EquipmentService {
     }
 
     public EquipmentModel findBySerie(String serie){
-        return equipmentRepository.findBySerie(serie).orElseThrow(()->new ObjectNotFound());
+        return equipmentRepository.findBySerie(serie).orElseThrow();
     }
 
     public EquipmentModel findByRegistrationNumber(Integer rNum){

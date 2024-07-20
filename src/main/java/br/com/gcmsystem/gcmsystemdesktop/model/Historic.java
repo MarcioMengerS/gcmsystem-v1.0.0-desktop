@@ -24,7 +24,7 @@ public class Historic {
     private Integer id;
     private LocalDate date;
     private LocalTime time;
-    private String status;
+    private String status;//emprestado ou devolvido
     private String note;
     //Atributos GCM
     private Integer gcmId;
@@ -39,6 +39,8 @@ public class Historic {
     private String equipBrand;
     private CategoryEnum equipCategory;
     private Integer equipRegistrationNumber;
+    private String serie;
+    private Integer prefix;
     private String equipPlate;
 
 

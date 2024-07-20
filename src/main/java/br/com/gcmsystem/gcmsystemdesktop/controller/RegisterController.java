@@ -37,6 +37,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -56,6 +57,8 @@ public class RegisterController implements Initializable{
     private HistoricService historicService;
 
     @FXML
+    private TextField gcmTF;
+    @FXML
     private Text resultRfid;
     @FXML
     private Button loanButton;
@@ -64,7 +67,7 @@ public class RegisterController implements Initializable{
     @FXML
     private ComboBox<CategoryEnum> equipmCatComboBox;
     @FXML
-    private ComboBox<String> gcmComboBox, equipmNumComboBox;
+    private ComboBox<String> equipmNumComboBox;
     @FXML
     private TableView<RegisterModel> registerTableView;
     @FXML
@@ -75,16 +78,16 @@ public class RegisterController implements Initializable{
     @FXML
     private TableColumn<RegisterModel, String>
         gcmNameColumn, gcmEmailColumn,gcmTagColumn,
-        equipmentPatrColumn, equipmentCategoryColumn, equipmentBrandColumn, equipmentModelColumn;
+        equipmentPatrColumn, equipmentCategoryColumn,
+        equipmentBrandColumn, equipmentModelColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ///////// início autocomplete gcmComboBox ////////////
+        ///////// início autocomplete gcmTextField ////////////
         ObservableList<String> items = FXCollections.observableArrayList(listAllGcm());
-        // gcmComboBox.getItems().setAll(items);
-        TextFields.bindAutoCompletion(gcmComboBox.getEditor(), items);
-        /////////// fim autocomplete gcmComboBox ////////////
+        TextFields.bindAutoCompletion(gcmTF, items);
+        /////////// fim autocomplete gcmTextField ////////////
 
         equipmNumComboBox.setOnAction(event->{
             equipmNumComboBox.getSelectionModel().getSelectedItem();//seleciona equipamento desejado
@@ -93,6 +96,8 @@ public class RegisterController implements Initializable{
         equipmCatComboBox.getItems().setAll(CategoryEnum.values());
  
         list();
+
+        onKeyRelesead();
     }
 
     //Empréstimo de equipamento. Thread para leitura do Crachá
@@ -108,15 +113,15 @@ public class RegisterController implements Initializable{
 
             // Atualiza a interface gráfica na thread da aplicação
             Platform.runLater(() -> {
-                processResult(result);
+                associate(result);
                 loanButton.setDisable(false); // Reabilita o botão após a operação
             });
         }).start();
     }
 
-    //Instância da cautela e consolidação no banco
-    public void processResult(String result){
-        String numberGcm = gcmComboBox.getSelectionModel().getSelectedItem();
+    //Realiza emprestimo do equipamento e registra histórico
+    public void associate(String result){
+        String numberGcm = gcmTF.getText();
         GcmModel gcmModel = gcmService.findByNumber(Short.parseShort(numberGcm));
 
         //Encontrou GCM? compara as Tags
@@ -131,12 +136,23 @@ public class RegisterController implements Initializable{
             EquipmentModel equipmentModel = new EquipmentModel();//Instancia objeto Equipamento
             String equipmentNum = equipmNumComboBox.getSelectionModel().getSelectedItem(); //pega patrimonio selecionado pelo usuário
             //busca no register patrimonio com esse numero
-            Integer e = Integer.valueOf(equipmentNum);// converte em numero
-            equipmentModel = equipmentService.findByRegistrationNumber(e);//busca equipamnto pelo numero de patrimonio
+            Integer e = Integer.valueOf(equipmentNum);// converte em nº patrimonio e prefixo
+            CategoryEnum equipmentSelected =equipmCatComboBox.getSelectionModel().getSelectedItem();
+            if(equipmentSelected.equals(CategoryEnum.VEICULO)){
+                //se categoria for veiculo busca pelo prefixo
+                equipmentModel = equipmentService.findByPrefix(e);
+            }else if(equipmentSelected.equals(CategoryEnum.CAMERA_CORPORAL)){
+                //se categoria for camera corporal busca pelo nº de série
+                equipmentModel = equipmentService.findBySerie(equipmentNum);
+            }else{
+                //senão busca pelo patrimonio
+                equipmentModel = equipmentService.findByRegistrationNumber(e);//busca equipamento pelo numero de patrimonio
+            }
             registerModel.setEquipment(equipmentModel);//associa Equipamento a cautela
 
             historicService.createHistoric(registerModel);//registra no historico a cautela
             registerService.save(registerModel);// salva cautela no banco de dados
+            clear();
         }else{
             resultRfid.setText("GM NÃO IDENTIFICADO");
         }
@@ -161,7 +177,6 @@ public class RegisterController implements Initializable{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         dateColumn.setCellFactory(new Callback<TableColumn<RegisterModel,LocalDate>,TableCell<RegisterModel,LocalDate>>() {
-
             @Override
             public TableCell<RegisterModel, LocalDate> call(TableColumn<RegisterModel, LocalDate> param) {
                 return new TableCell<RegisterModel, LocalDate>() {
@@ -262,13 +277,20 @@ public class RegisterController implements Initializable{
         equipmNumComboBox.getItems().clear(); //limpa combobox
         ArrayList<String> valuesSelec = new ArrayList<>();//equipamentos selecionados
         CategoryEnum category = equipmCatComboBox.getSelectionModel().getSelectedItem(); //retorna a categoria selecionada pelo usuário
-        List<EquipmentModel> listCategoryAll = equipmentService.findByCategory(category); //Busca todos equipamentos da categoria
+        List<EquipmentModel> listCategoryAll = equipmentService.findByCategory(category); //Busca todos equipamentos da categoria selecionada
         listCategoryAll.forEach((cat)->{
-            valuesSelec.add(cat.getRegistrationNumber().toString());
+            if (cat.getCategory().equals(CategoryEnum.VEICULO)) {
+                valuesSelec.add(cat.getPrefix().toString());//Adiciona todos prefixo de todos itens da categoria VEICULO
+            }else if(cat.getCategory().equals(CategoryEnum.CAMERA_CORPORAL)){
+                valuesSelec.add(cat.getSerie().toString());//Adiciona todos nºs de serie de todos itens da categoria CAMERA CORPORAL
+            }else{
+                valuesSelec.add(cat.getRegistrationNumber().toString());//nº patrimonio de todos itens da categorias restantes
+            } 
         });
+        //Trecho que remove equipamentos emprestados das opções disponíveis no equipmNumComboBox 
         List<RegisterModel> listRegisterAll =registerService.findAll();//Busca todos as cautelas
-        if (listCategoryAll.size()!=0) {//Lista de equipamentos da mesma categoria estiver vazia retorna sem cadastro de equipamentos
-            if(listRegisterAll.size()!=0){//Lista de cautela vazia retorna lista de equipamento cheia
+        if (listCategoryAll.size()!=0) {//Entra no if se lista de equipamentos da mesma categoria não for vazia
+            if(listRegisterAll.size()!=0){//Entra no if se lista de cautelas não for vazia
                 for (var i=0; listCategoryAll.size()>i; i++) {
                     for (var z=0; listRegisterAll.size()>z; z++) {
                         if(listRegisterAll.get(z).getEquipment().getId()==listCategoryAll.get(i).getId()){
@@ -279,21 +301,11 @@ public class RegisterController implements Initializable{
                     }
                 }
             }
-        }else{               
-            //Não foi cadastrados equipamentos para categoria selecionada pelo usuario
-            System.out.println("categoria sem equipamento cadastrado");
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Lista vazia");
-            alert.setHeaderText("Informação importante");
-            alert.setContentText("Não foram cadastrados equipamentos\n para a categoria selecionada");
-
-            alert.showAndWait();
-            return;
         }
         equipmNumComboBox.getItems().addAll(valuesSelec);
     }
 
-    //Adiciona botão na última coluna da Tabela
+    //Adiciona icone/botão de devolução na última coluna da Tabela
     private void addIconToTable() {
         TableColumn<RegisterModel, String> editColumn = new TableColumn<>();
 
@@ -338,12 +350,12 @@ public class RegisterController implements Initializable{
         editColumn.setCellFactory(cellFactory);
         registerTableView.getColumns().add(editColumn);
     }
-
+    //lê cartão para devolução
     public void captureTag(RegisterModel register){
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Informação");
         alert.setHeaderText("Leitura habilitada");
-        alert.setContentText("Aproxime ou encoste o cartão do leitor" );
+        alert.setContentText("Aproxime ou encoste o cartão no leitor" );
 
         alert.show();
         // Executa a operação de forma assíncrona em uma nova thread
@@ -351,19 +363,51 @@ public class RegisterController implements Initializable{
             String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
 
             // Atualiza a interface gráfica na thread da aplicação
-            Platform.runLater(() -> {//coincidem tag lida com a do banco
+            Platform.runLater(() -> {//verifica se tag é a mesma que a do banco
                 alert.close();
                 if(result.equals(register.getGcm().getTag())){
-                    deleteItemList(register.getId());
+                    disassociate(register);
                 }else{
                     //aviso não coincide regitro
                 }
             });
         }).start();
     }
+    //desassocia equipamento de GCM
+    public void disassociate(RegisterModel registerM){//pegar o register que vem do captureTag e slavar no historic
 
-    public void deleteItemList(Integer id){
-        registerService.delete(id);
+        registerM.setStatus("Devolvido");
+        historicService.createHistoric(registerM);//registra no historico a devolução de material
+        registerService.delete(registerM.getId());//desvincula GCM e Equipamento
         list();
+    }
+    //controla habilitação de combobox e botões
+    public void onKeyRelesead(){
+        gcmTF.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null& !newValue.isEmpty()){
+                equipmCatComboBox.setDisable(false);
+                equipmNumComboBox.setDisable(false);
+            }   
+            else{
+                equipmCatComboBox.setDisable(true);
+                equipmNumComboBox.setDisable(true);
+            }
+        });
+
+        equipmNumComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if(newValue!=null)
+                loanButton.setDisable(false);
+            else
+                loanButton.setDisable(true);
+        });
+    }
+
+    public void clear(){
+        gcmTF.clear();
+        equipmCatComboBox.getSelectionModel().clearSelection();
+        equipmNumComboBox.getSelectionModel().clearSelection();
+        noteText.clear();
+        resultRfid.setText("Resultado RFID");
+        onKeyRelesead();
     }
 }

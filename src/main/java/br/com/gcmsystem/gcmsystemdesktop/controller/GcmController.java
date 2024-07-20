@@ -139,15 +139,9 @@ public class GcmController{
 
             // Atualiza a interface gráfica na thread da aplicação
             Platform.runLater(() -> {
-                processResult(result);
+                tagField.setText(result);
                 cardButton.setDisable(false); // Reabilita o botão após a operação
             });
         }).start();
-    }
-
-    public void processResult(String result){
-        
-        tagField.setText(result);
-        cardButton.setDisable(false);
     }
 }

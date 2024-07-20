@@ -53,7 +53,9 @@ public class EquipamentoController {
     @FXML
     private HBox searchHB;
     @FXML
-    private ComboBox<CategoryEnum> categoryComboBox, filterCatCB;
+    private ComboBox<CategoryEnum> categoryComboBox;
+    @FXML
+    private ComboBox<String> testeCB;
     @FXML
     private TextField idField, modelField, brandField, numField, plateField, searchTF;
     @FXML
@@ -113,14 +115,36 @@ public class EquipamentoController {
 
         addIconToTable();
         categoryComboBox.getItems().setAll(CategoryEnum.values());
-        filterCatCB.getItems().setAll(CategoryEnum.values());
         // Configurar evento de busca
         searchTF.textProperty().addListener((observable, oldValue, newValue) -> {
             filterTable(newValue.toLowerCase());
         });
 
+        testeCB.getItems().setAll(enumInString());
+        testeCB.setOnAction((event)->{ 
+            String itemSelect = testeCB.getSelectionModel().getSelectedItem();
+            List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
+            for (CategoryEnum cat : listEnum) {
+                if(cat.name().equals(itemSelect)){
+                    equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findByCategory(cat)));
+                }
+                if(itemSelect.equals("Todos")){
+                    equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findAll()));
+                }
+            }
+        });
         //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa
         searchTF.setOnKeyTyped(event ->insertIconX());
+    }
+
+    public List<String> enumInString(){
+        List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
+        List<String> listString = new ArrayList<>();
+        for (int i = 0; i < listEnum.size(); i++) {
+            listString.add(listEnum.get(i).name());
+        }
+        listString.addFirst("Todos");
+        return listString;
     }
 
     public void insertIconX(){
@@ -171,20 +195,6 @@ public class EquipamentoController {
                     .collect(Collectors.toList());
             equipmentTableView.setItems(FXCollections.observableArrayList(filteredList));
         }
-    }
-
-    public void filterTableCategory(){
-        CategoryEnum categoryEnum = filterCatCB.getSelectionModel().getSelectedItem();
-        List<CategoryEnum> enumList = Arrays.asList(CategoryEnum.values());
-        List<String> stringList = new ArrayList<>();
-        for (CategoryEnum e : enumList) {
-            
-            System.out.println(categoryEnum.toString());
-            stringList.add(e.name());
-            System.out.println(stringList.get(0));
-
-        }
-        equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findByCategory(categoryEnum)));
     }
 
     //Adiciona botão na última coluna da Tabela

@@ -57,7 +57,7 @@
             <Label layoutX="229.0" layoutY="108.0" text="Nº Série/Prefixo" />
             <Label layoutX="483.0" layoutY="106.0" text="Placa" />
             <ComboBox fx:id="categoryComboBox" layoutX="86.0" layoutY="58.0" prefHeight="25.0" prefWidth="191.0" />
-            <Button fx:id="saveButton" layoutX="601.0" layoutY="170.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Adicionar Equipamento">
+            <Button fx:id="saveButton" layoutX="594.0" layoutY="159.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Adicionar Equipamento">
                <font>
                   <Font size="13.0" />
                </font>
@@ -69,11 +69,10 @@
                         <ToggleGroup fx:id="search" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="registrationNumberRB" mnemonicParsing="false" text="Patrimonio" toggleGroup="$search" />
                   <RadioButton fx:id="prefixRB" mnemonicParsing="false" text="Prefixo" toggleGroup="$search" />
+                  <RadioButton fx:id="registrationNumberRB" mnemonicParsing="false" text="Patrimônio" toggleGroup="$search" />
                </children>
             </VBox>
-            <ComboBox fx:id="filterCatCB" layoutX="350.0" layoutY="161.0" onAction="#filterTableCategory" prefWidth="150.0" promptText="filtrar por categoria" />
             <HBox fx:id="searchHB" alignment="CENTER_LEFT" layoutX="122.0" layoutY="160.0" prefHeight="28.0" prefWidth="182.0">
                <children>
                   <TextField fx:id="searchTF" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="142.0" promptText="Pesquisar">
@@ -83,6 +82,7 @@
                   </TextField>
                </children>
             </HBox>
+            <ComboBox fx:id="testeCB" layoutX="304.0" layoutY="162.0" prefHeight="25.0" prefWidth="148.0" promptText="Filtrar por categoria" />
          </children>
       </Pane>
    </center>

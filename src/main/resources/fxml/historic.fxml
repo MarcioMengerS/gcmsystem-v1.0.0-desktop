@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.HistoricController">
+   <children>
+      <TableView fx:id="historicTV" layoutX="33.0" layoutY="144.0" prefHeight="428.0" prefWidth="784.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="144.0">
+        <columns>
+            <TableColumn fx:id="statusC" prefWidth="75.0" text="Status" />
+            <TableColumn fx:id="dateC" prefWidth="68.0" text="Data" />
+            <TableColumn fx:id="timeC" prefWidth="56.0" text="Hora" />
+            <TableColumn maxWidth="304.0" minWidth="100.0" prefWidth="304.0" text="Equipamento">
+               <columns>
+                  <TableColumn fx:id="equipCategoryC" prefWidth="130.0" text="Categoria" />
+                  <TableColumn fx:id="equipRegistrationNumberC" prefWidth="87.0" text="Patrimônio" />
+                  <TableColumn fx:id="prefixC" prefWidth="57.0" text="Prefixo" />
+               </columns>
+            </TableColumn>
+            <TableColumn prefWidth="259.0" text="Guarda Municipal">
+               <columns>
+                <TableColumn fx:id="gcmNumberC" prefWidth="44.0" text="Nº" />
+                <TableColumn fx:id="gcmNameC" prefWidth="219.0" text="Nome" />
+               </columns>
+            </TableColumn>
+            <TableColumn fx:id="infoC" prefWidth="36.0" style="-fx-alignment: center;" text="Info" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

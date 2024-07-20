@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
@@ -14,11 +15,19 @@
    <center>
       <Pane prefHeight="600.0" prefWidth="1028.0" BorderPane.alignment="CENTER">
          <children>
-            <TableView fx:id="registerTableView" layoutX="4.0" layoutY="193.0" prefHeight="290.0" prefWidth="1067.0">
+            <TableView fx:id="registerTableView" focusTraversable="false" layoutX="4.0" layoutY="193.0" prefHeight="290.0" prefWidth="1067.0">
               <columns>
-                <TableColumn fx:id="statusColumn" prefWidth="83.0" text="Status" />
-                <TableColumn fx:id="dateColumn" prefWidth="68.0" text="Data" />
+                <TableColumn fx:id="statusColumn" prefWidth="76.0" text="Status" />
+                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Data" />
                   <TableColumn fx:id="timeColumn" prefWidth="68.0" text="Hora" />
+                  <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="387.0" text="Equipamento">
+                     <columns>
+                        <TableColumn fx:id="equipmentCategoryColumn" prefWidth="78.0" text="Categoria" />
+                        <TableColumn fx:id="equipmentPatrColumn" prefWidth="109.0" text="Patrimônio" />
+                        <TableColumn fx:id="equipmentBrandColumn" prefWidth="76.0" text="Marca" />
+                        <TableColumn fx:id="equipmentModelColumn" prefWidth="77.0" text="Modelo" />
+                     </columns>
+                  </TableColumn>
                   <TableColumn prefWidth="342.0" text="Guarda Municipal">
                      <columns>
                         <TableColumn fx:id="gcmNameColumn" prefWidth="130.0" text="Nome" />
@@ -26,28 +35,20 @@
                         <TableColumn fx:id="gcmTagColumn" prefWidth="100.0" text="Tag" />
                      </columns>
                   </TableColumn>
-                  <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="387.0" text="Equipmento">
-                     <columns>
-                        <TableColumn fx:id="equipmentPatrColumn" prefWidth="109.0" text="Patrimônio" />
-                        <TableColumn fx:id="equipmentCategoryColumn" prefWidth="78.0" text="Categoria" />
-                        <TableColumn fx:id="equipmentBrandColumn" prefWidth="76.0" text="Marca" />
-                        <TableColumn fx:id="equipmentModelColumn" prefWidth="77.0" text="Modelo" />
-                     </columns>
-                  </TableColumn>
                   <TableColumn fx:id="noteColumn" prefWidth="97.0" text="OBS." />
               </columns>
             </TableView>
-            <Button fx:id="loanButton" contentDisplay="CENTER" layoutX="721.0" layoutY="101.0" mnemonicParsing="false" onAction="#loan" prefHeight="43.0" prefWidth="136.0" text="Emprestar" />
-            <ComboBox fx:id="gcmComboBox" editable="true" layoutX="57.0" layoutY="84.0" prefHeight="25.0" prefWidth="113.0" />
-            <ComboBox fx:id="equipmCatComboBox" layoutX="191.0" layoutY="84.0" onAction="#searchByCategory" prefHeight="25.0" prefWidth="143.0" />
-            <ComboBox fx:id="equipmNumComboBox" layoutX="353.0" layoutY="85.0" prefHeight="25.0" prefWidth="128.0" />
+            <Button fx:id="loanButton" contentDisplay="CENTER" disable="true" layoutX="721.0" layoutY="101.0" mnemonicParsing="false" onAction="#loan" prefHeight="43.0" prefWidth="136.0" text="Emprestar" />
+            <ComboBox fx:id="equipmCatComboBox" disable="true" layoutX="191.0" layoutY="84.0" onAction="#searchByCategory" prefHeight="25.0" prefWidth="143.0" />
+            <ComboBox fx:id="equipmNumComboBox" disable="true" layoutX="353.0" layoutY="85.0" prefHeight="25.0" prefWidth="143.0" />
             <Label layoutX="57.0" layoutY="64.0" text="Guarda Municipal" />
             <Label layoutX="191.0" layoutY="64.0" text="Equipamento" />
-            <Label layoutX="353.0" layoutY="64.0" prefHeight="17.0" prefWidth="114.0" text="Patrimônio / Série" />
+            <Label layoutX="353.0" layoutY="64.0" prefHeight="17.0" prefWidth="147.0" text="Patrimônio / Série / Prefixo" />
             <Label layoutX="38.0" layoutY="29.0" text="REGISTRO DE CAUTELAS" />
-            <TextArea fx:id="noteText" layoutX="500.0" layoutY="85.0" prefHeight="75.0" prefWidth="200.0" />
-            <Label layoutX="500.0" layoutY="64.0" prefHeight="17.0" prefWidth="114.0" text="Obsevações" />
-            <Text fx:id="resultRfid" layoutX="494.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="212.40625" />
+            <TextArea fx:id="noteText" focusTraversable="false" layoutX="517.0" layoutY="85.0" prefHeight="75.0" prefWidth="183.0" />
+            <Label layoutX="518.0" layoutY="64.0" prefHeight="17.0" prefWidth="114.0" text="Observações" />
+            <Text fx:id="resultRfid" fill="#b9b9b9" layoutX="500.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resultado RFID" textAlignment="CENTER" wrappingWidth="199.40625" />
+            <TextField fx:id="gcmTF" layoutX="57.0" layoutY="85.0" prefHeight="25.0" prefWidth="111.0" promptText="Digite o nº do GM" />
          </children></Pane>
    </center>
 </BorderPane>

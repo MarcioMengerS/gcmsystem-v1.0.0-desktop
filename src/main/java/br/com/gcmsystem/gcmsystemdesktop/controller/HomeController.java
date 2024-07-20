@@ -17,6 +17,8 @@ public class HomeController {
     private Button gcmButton;
     @FXML
     private Button registroButton;
+    @FXML
+    private Button historicButton;
 
     public void setMainApp(GcmsystemdesktopApplication mainApp) {
         this.mainapp = mainApp;
@@ -24,14 +26,14 @@ public class HomeController {
 
     @FXML
     private void initialize() {
-        equipamentoButton.setDisable(true);//disabilita na inicialização pois é já está selecionado
+        equipamentoButton.setDisable(true);//disabilita na inicialização pois já está selecionado
         equipamentoButton.setOnAction(event -> {
             mainapp.showEquipamento();
 
             equipamentoButton.setDisable(true);
             gcmButton.setDisable(false);
             registroButton.setDisable(false);
-
+            historicButton.setDisable(false);
         });
 
         gcmButton.setOnAction(event -> {
@@ -40,6 +42,7 @@ public class HomeController {
             gcmButton.setDisable(true);
             equipamentoButton.setDisable(false);
             registroButton.setDisable(false);
+            historicButton.setDisable(false);
         });
 
         registroButton.setOnAction(event -> {
@@ -48,6 +51,16 @@ public class HomeController {
             registroButton.setDisable(true);
             equipamentoButton.setDisable(false);
             gcmButton.setDisable(false);
+            historicButton.setDisable(false);
+        });
+
+        historicButton.setOnAction(event -> {
+            mainapp.showHistoric();
+            
+            historicButton.setDisable(true);
+            equipamentoButton.setDisable(false);
+            gcmButton.setDisable(false);
+            registroButton.setDisable(false);
         });
     }
 }
