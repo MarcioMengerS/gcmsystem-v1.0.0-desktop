@@ -71,15 +71,15 @@ public class RegisterController implements Initializable{
     @FXML
     private TableView<RegisterModel> registerTableView;
     @FXML
-    private TableColumn<RegisterModel, String>statusColumn, timeColumn, noteColumn;
+    private TableColumn<RegisterModel, String>statusColumn, timeColumn;
     @FXML
     private TableColumn<RegisterModel, LocalDate> dateColumn;
 
     @FXML
     private TableColumn<RegisterModel, String>
-        gcmNameColumn, gcmEmailColumn,gcmTagColumn,
+        gcmNameColumn,gcmNumColumn,
         equipmentPatrColumn, equipmentCategoryColumn,
-        equipmentBrandColumn, equipmentModelColumn;
+        equipmentSerieColumn, equipmentPrefixColumn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -171,7 +171,6 @@ public class RegisterController implements Initializable{
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
-        noteColumn.setCellValueFactory(new PropertyValueFactory<>("note"));//coluna observação
 
         //Formatar data
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -192,7 +191,7 @@ public class RegisterController implements Initializable{
                 };
             }
         });
-
+        //Como GCM e Equipamento são objetos de outras classes é necessário os métodos abaixo
         // Insere coluna nome em GCM
         gcmNameColumn.setCellValueFactory(cellData -> {
             GcmModel gcm = cellData.getValue().getGcm();
@@ -202,20 +201,11 @@ public class RegisterController implements Initializable{
                 return new SimpleStringProperty("");
             }
         });
-        //Insere coluna email em GCM
-        gcmEmailColumn.setCellValueFactory(cellData -> {
+        //Insere coluna Número em GCM
+        gcmNumColumn.setCellValueFactory(cellData -> {
             GcmModel gcm = cellData.getValue().getGcm();
             if (gcm != null) {
-                return new SimpleStringProperty(gcm.getEmail());
-            } else {
-                return new SimpleStringProperty("");
-            }
-        });
-        //Insere coluna tag em GCM
-        gcmTagColumn.setCellValueFactory(cellData -> {
-            GcmModel gcm = cellData.getValue().getGcm();
-            if (gcm != null) {
-                return new SimpleStringProperty(gcm.getTag());
+                return new SimpleStringProperty(String.valueOf(gcm.getNumber()));
             } else {
                 return new SimpleStringProperty("");
             }
@@ -238,20 +228,20 @@ public class RegisterController implements Initializable{
                 return new SimpleStringProperty("");
             }
         });
-        //Insere coluna Marca em equipamento
-        equipmentBrandColumn.setCellValueFactory(cellData -> {
+        //Insere coluna Serie em equipamento
+        equipmentSerieColumn.setCellValueFactory(cellData -> {
             EquipmentModel equipment = cellData.getValue().getEquipment();
             if (equipment != null) {
-                return new SimpleStringProperty(equipment.getBrand());
+                return new SimpleStringProperty(equipment.getSerie());
             } else {
                 return new SimpleStringProperty("");
             }
         });
-        //Insere coluna Modelo em equipamento
-        equipmentModelColumn.setCellValueFactory(cellData -> {
+        //Insere coluna Prefixo em equipamento
+        equipmentPrefixColumn.setCellValueFactory(cellData -> {
             EquipmentModel equipment = cellData.getValue().getEquipment();
-            if (equipment != null) {
-                return new SimpleStringProperty(equipment.getModel());
+            if (equipment != null && equipment.getPrefix() != null) {
+                return new SimpleStringProperty(String.valueOf(equipment.getPrefix()));
             } else {
                 return new SimpleStringProperty("");
             }
@@ -294,9 +284,17 @@ public class RegisterController implements Initializable{
                 for (var i=0; listCategoryAll.size()>i; i++) {
                     for (var z=0; listRegisterAll.size()>z; z++) {
                         if(listRegisterAll.get(z).getEquipment().getId()==listCategoryAll.get(i).getId()){
-                            System.out.println("objeto emprestado de numero:"+listCategoryAll.get(i).getRegistrationNumber().toString());
-                            //remove somente os equipamentos que foram emprestados
-                            valuesSelec.remove(listCategoryAll.get(i).getRegistrationNumber().toString());
+                             //remove da lista do combobox somente os equipamentos que foram emprestados
+                            if(listCategoryAll.get(i).getCategory().equals(CategoryEnum.VEICULO)){
+                                System.out.println("objeto emprestado de numero:"+listCategoryAll.get(i).getPrefix());
+                                valuesSelec.remove(listCategoryAll.get(i).getPrefix().toString());
+                            }else if(listCategoryAll.get(i).getCategory().equals(CategoryEnum.CAMERA_CORPORAL)){
+                                System.out.println("objeto emprestado de numero:"+listCategoryAll.get(i).getSerie());
+                                valuesSelec.remove(listCategoryAll.get(i).getSerie());
+                            }else{
+                                System.out.println("objeto emprestado de numero:"+listCategoryAll.get(i).getRegistrationNumber().toString());
+                                valuesSelec.remove(listCategoryAll.get(i).getRegistrationNumber().toString());
+                            }
                         }
                     }
                 }

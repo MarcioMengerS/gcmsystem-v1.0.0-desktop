@@ -11,19 +11,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.GcmController">
+<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.GcmController">
    <center>
       <AnchorPane prefHeight="600.0" prefWidth="850.0" BorderPane.alignment="CENTER">
          <children>
             <Text layoutX="31.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CADASTRO GCM" wrappingWidth="101.0" />
-            <ScrollPane layoutX="31.0" layoutY="249.0" prefHeight="303.0" prefWidth="784.0">
+            <ScrollPane layoutX="119.0" layoutY="254.0" prefHeight="303.0" prefWidth="629.0">
                <content>
-                  <TableView fx:id="gcmTableView" prefHeight="298.0" prefWidth="780.0">
+                  <TableView fx:id="gcmTableView" prefHeight="298.0" prefWidth="625.0">
                     <columns>
                         <TableColumn fx:id="numberColumn" prefWidth="52.0" text="Nº" />
-                      <TableColumn fx:id="nameColumn" prefWidth="340.0" text="Nome" />
-                      <TableColumn fx:id="emailColumn" prefWidth="156.0" text="Email" />
-                        <TableColumn fx:id="tagColumn" prefWidth="230.0" text="Cartão" />
+                      <TableColumn fx:id="nameColumn" prefWidth="196.0" text="Nome" />
+                      <TableColumn fx:id="sutacheColumn" prefWidth="165.0" text="Sutache" />
+                        <TableColumn fx:id="tagColumn" prefWidth="153.0" text="Cartão" />
                     </columns>
                   </TableView>
                </content>
@@ -49,6 +49,7 @@
             <TextField fx:id="numberField" layoutX="250.0" layoutY="51.0" prefHeight="25.0" prefWidth="56.0" />
             <Label layoutX="224.0" layoutY="55.0" text="Nº" />
             <Button fx:id="cardButton" layoutX="433.0" layoutY="132.0" mnemonicParsing="false" onAction="#searchTag" text="cadatrar crachá" />
+            <Button fx:id="registerButton" layoutX="638.0" layoutY="198.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="177.0" text="Adicionar GCM" />
          </children>
       </AnchorPane>
    </center>

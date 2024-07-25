@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.LocationEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class EquipmentModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private CategoryEnum category; //categoria
-    private String location;//localização - Transformar em ENUM
+    private LocationEnum location;//local do equipamento
     private String brand;//marca
     private String model;//modelo
     private String serie;//nºsérie

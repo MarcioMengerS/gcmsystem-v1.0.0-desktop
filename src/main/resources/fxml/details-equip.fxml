@@ -41,11 +41,11 @@
             <Label text="Categoria" />
             <ComboBox fx:id="categoryCB" focusTraversable="false" prefHeight="25.0" prefWidth="181.0" GridPane.columnIndex="1" />
             <Label text="Localização" GridPane.columnIndex="2" />
-            <TextField fx:id="locationTF" focusTraversable="false" GridPane.columnIndex="3" />
             <Label text="Marca" GridPane.rowIndex="1" />
             <TextField fx:id="brandTF" focusTraversable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Modelo" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <TextField fx:id="modelTF" focusTraversable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <ComboBox fx:id="locationCB" focusTraversable="false" prefHeight="25.0" prefWidth="195.0" GridPane.columnIndex="3" />
          </children>
          <opaqueInsets>
             <Insets />

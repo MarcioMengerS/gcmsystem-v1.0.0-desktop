@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.LocationEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import javafx.fxml.FXML;
@@ -42,11 +43,13 @@ public class EquipmentDetailsController implements Initializable{
     @FXML
     private ComboBox<CategoryEnum> categoryCB;//categoria
     @FXML
+    private ComboBox<LocationEnum> locationCB;//categoria
+    @FXML
     private DatePicker expirationDP;//data validade
     @FXML
     private Text idT;//id
-    @FXML
-    private TextField locationTF;//localização
+    // @FXML
+    // private TextField locationTF;//localização
     @FXML
     private TextField modelTF;//modelo
     @FXML
@@ -76,7 +79,7 @@ public class EquipmentDetailsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        locationCB.getItems().setAll(LocationEnum.values());
         categoryCB.getItems().setAll(CategoryEnum.values());
         categoryCB.setOnAction(event->{
             CategoryEnum catEnum = categoryCB.getSelectionModel().getSelectedItem();
@@ -133,9 +136,14 @@ public class EquipmentDetailsController implements Initializable{
         
         if (eM != null) {
             idT.setText(String.valueOf(equipmentModel.getId()));
-            registrationNumberTF.setText(String.valueOf(equipmentModel.getRegistrationNumber()));
+            if(equipmentModel.getRegistrationNumber()==null){
+                registrationNumberTF.setText("");
+                registrationNumberTF.setPromptText("");
+            }else{
+                registrationNumberTF.setText(String.valueOf(equipmentModel.getRegistrationNumber()));
+            }   
             brandTF.setText(equipmentModel.getBrand());
-            locationTF.setText(equipmentModel.getLocation());
+            locationCB.getSelectionModel().select(equipmentModel.getLocation());
             modelTF.setText(equipmentModel.getModel());
             serieTF.setText(equipmentModel.getSerie());
             moreInformTA.setText(equipmentModel.getMoreInform());
@@ -213,7 +221,7 @@ public class EquipmentDetailsController implements Initializable{
         if(equipmentModel!=null){
              if(!registrationNumberTF.getText().trim().isEmpty())
                 equipmentModel.setRegistrationNumber(Integer.parseInt(registrationNumberTF.getText()));
-            equipmentModel.setLocation(locationTF.getText());
+            equipmentModel.setLocation(locationCB.getValue());
             equipmentModel.setSerie(serieTF.getText());
             equipmentModel.setMoreInform(moreInformTA.getText());
             equipmentModel.setModel(modelTF.getText());
@@ -234,7 +242,7 @@ public class EquipmentDetailsController implements Initializable{
     @FXML
     public void save(){
         EquipmentModel eModel = new EquipmentModel();
-        eModel.setLocation(locationTF.getText());
+        eModel.setLocation(locationCB.getSelectionModel().getSelectedItem());
         eModel.setBrand(brandTF.getText());
         eModel.setModel(modelTF.getText());
         eModel.setSerie(serieTF.getText());
@@ -249,7 +257,7 @@ public class EquipmentDetailsController implements Initializable{
         //atualiza lista na pagina principal do equipamento
         equipamentoController.list();
         //fecha a janela após cadastro
-        Stage stage = (Stage) updateBTN.getScene().getWindow();
+        Stage stage = (Stage) saveBTN.getScene().getWindow();
         stage.close();
     }
 

@@ -40,8 +40,18 @@ WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed mod
 >Dia 14/07/2024 apresentou o seguinte aviso:  
 WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @54c25dd0'  
 
-Ao executar aplicativo, usar o comando Maven para garantir que todas as dependências, incluindo o ControlsFX, sejam carregadas corretamente: **mvn javafx:run** 
+Ao executar aplicativo, usar o comando Maven para garantir que todas as dependências, incluindo o ControlsFX, sejam carregadas corretamente:   
+    1. Limpe e Compile: **mvn clean install**  
+    2. Execute o Projeto JavaFX:  **mvn javafx:run** 
 
 >[INFO] BUILD SUCCESS  
 [INFO] Total time:  55.722 s  
-[INFO] Finished at: 2024-07-14T16:55:09-03:00  
+[INFO] Finished at: 2024-07-14T16:55:09-03:00 
+
+>[INFO] BUILD SUCCESS  
+[INFO] Total time:  05:17 h  
+[INFO] Finished at: 2024-07-20T17:05:34-03:00
+
+>[INFO] BUILD SUCCESS
+[INFO] Total time:  57.516 s
+[INFO] Finished at: 2024-07-25T19:49:03-03:00

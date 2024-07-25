@@ -44,7 +44,6 @@ public class EquipamentoController {
     @Autowired
     private ApplicationContext context;  // Injeta o contexto do Spring
     private Integer id;
-    private EquipmentModel item;
 
     @Autowired
     private EquipmentService equipmentService;
@@ -53,11 +52,9 @@ public class EquipamentoController {
     @FXML
     private HBox searchHB;
     @FXML
-    private ComboBox<CategoryEnum> categoryComboBox;
+    private ComboBox<String> filterCategoryCB;
     @FXML
-    private ComboBox<String> testeCB;
-    @FXML
-    private TextField idField, modelField, brandField, numField, plateField, searchTF;
+    private TextField searchTF;
     @FXML
     private Button saveButton;
     @FXML
@@ -82,22 +79,7 @@ public class EquipamentoController {
         serieColumn.setCellValueFactory(new PropertyValueFactory<>("serie"));
 
         list();
-        //Preenchimento nos campos após seleção de itens na lista 
-        equipmentTableView.getSelectionModel().selectedItemProperty()
-            .addListener((obs, old, newValue)->{
-                if(newValue !=null){
-                    id = newValue.getId();
-                    item = selectedItem();
-                    idField.setText(String.valueOf(item.getId()));
-                    modelField.setText(item.getModel());
-                    brandField.setText(item.getBrand());
-                    categoryComboBox.setValue(item.getCategory());
-                    numField.setText(String.valueOf(item.getRegistrationNumber()));
-                    plateField.setText(item.getPlate());
 
-                    lblWarning.setVisible(false);
-                }
-            });
         saveButton.setOnAction(event->{
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/details-equip.fxml"));
@@ -114,15 +96,14 @@ public class EquipamentoController {
         });
 
         addIconToTable();
-        categoryComboBox.getItems().setAll(CategoryEnum.values());
         // Configurar evento de busca
         searchTF.textProperty().addListener((observable, oldValue, newValue) -> {
             filterTable(newValue.toLowerCase());
         });
 
-        testeCB.getItems().setAll(enumInString());
-        testeCB.setOnAction((event)->{ 
-            String itemSelect = testeCB.getSelectionModel().getSelectedItem();
+        filterCategoryCB.getItems().setAll(enumInString());
+        filterCategoryCB.setOnAction((event)->{ 
+            String itemSelect = filterCategoryCB.getSelectionModel().getSelectedItem();
             List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
             for (CategoryEnum cat : listEnum) {
                 if(cat.name().equals(itemSelect)){
