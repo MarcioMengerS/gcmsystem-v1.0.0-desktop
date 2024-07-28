@@ -1,10 +1,18 @@
 package br.com.gcmsystem.gcmsystemdesktop.controller;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
+import br.com.gcmsystem.gcmsystemdesktop.enums.StatusEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.UnitEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.GcmModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.GcmService;
 import javafx.collections.FXCollections;
@@ -13,17 +21,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -33,19 +46,22 @@ import javafx.util.Callback;
 
 @Controller
 public class GcmController{
+
     @Autowired
     private ApplicationContext context;  // Injeta o contexto do Spring
-
-    // private Integer id;
-    //private GcmModel item;
-
     @Autowired
     private GcmService gcmService;
 
-    // @FXML
-    // private TextField /*,idField numberField,  emailField,nameField, tagField*/ ;
     @FXML
-    private Button /*saveButton, updateButton, deleteButton, clearButton,cardButton,*/  registerButton;
+    private HBox searchHB;
+    @FXML
+    private RadioButton numberRB, nameRB, sutacheRB;
+    @FXML
+    private ComboBox<String> statusCB, unitCB;
+    @FXML
+    private TextField searchTF;
+    @FXML
+    private Button registerButton;
     @FXML
     private Label lblTotal;
     @FXML
@@ -70,25 +86,50 @@ public class GcmController{
                 ex.printStackTrace();
             }
         });
+        //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa
+        searchTF.setOnKeyTyped(event ->insertIconX());
 
-        //Quando clica no item na lista automaticamente há o preenchimento dos campos
-        // gcmTableView.getSelectionModel().selectedItemProperty()
-        //     .addListener((obs, old, newValue)->{
-        //         if(newValue !=null){
-        //             id = newValue.getId();
-        //             item = selectedItem();
-        //             idField.setText(String.valueOf(item.getId()));
-        //             numberField.setText(item.getNumber().toString());
-        //             nameField.setText(item.getName());
-        //             emailField.setText(item.getEmail());
-        //             tagField.setText(item.getTag());
-        //             saveButton.setVisible(false);
-        //             clearButton.setVisible(true);
-        //             updateButton.setVisible(true);
-        //             deleteButton.setVisible(true);
-        //             lblWarning.setVisible(false);
-        //         }
-        //     });
+        statusCB.getItems().setAll(enumInString("Status"));
+        unitCB.getItems().setAll(enumInString("Unit"));
+
+        // realiza busca conforme informação digitada no searchTF
+        searchTF.textProperty().addListener((observable, oldValue, newValue) -> {
+            gcmTableView.refresh(); //limpa BackgroundFill que aparecia após seleção
+            filterRadioButton(newValue.toLowerCase());
+            // if(searchHB.getChildren().size()>1){//Se o campo pesquisar estiver vazio remove icone "X"
+            //     searchHB.getChildren().removeLast(); 
+            // }
+        });
+        searchTF.setOnMouseClicked((event)->{
+            unitCB.getSelectionModel().selectFirst();
+            statusCB.getSelectionModel().selectFirst();
+        });
+
+        //busca GCMs através do Combobox Status
+        statusCB.setOnAction((event)->{ 
+            gcmTableView.refresh(); //limpa BackgroundFill que aparecia após seleção
+            filterComboBox(statusCB.getId());
+        });
+        statusCB.setOnMouseClicked(event ->{
+            unitCB.getSelectionModel().selectFirst();
+            searchTF.clear();
+        });
+
+        //busca GCMs através do Combobox Unidade
+        unitCB.setOnAction((event)->{
+            gcmTableView.refresh(); //limpa BackgroundFill que aparecia após seleção
+            filterComboBox(unitCB.getId());
+        });
+        unitCB.setOnMouseClicked(event ->{
+            statusCB.getSelectionModel().selectFirst();
+            searchTF.clear();
+        });
+        
+        //limpa campo de pesquisa searchTF quando clicar em um dos Radios buttons
+        numberRB.setOnAction(event-> searchTF.clear());
+        nameRB.setOnAction(event-> searchTF.clear());
+        sutacheRB.setOnAction(event-> searchTF.clear());
+
         //Clique duplo na linha da tabela aciona o evento abaixo
         gcmTableView.setOnMouseClicked( event -> {
             if( event.getClickCount() == 2 ) {
@@ -111,10 +152,6 @@ public class GcmController{
             }
         });
     }
-
-    // public GcmModel selectedItem(){
-    //     return gcmService.findById(id);
-    // }
 
     public void list(){
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number")); //id: atributo do objeto GcmModel
@@ -160,74 +197,98 @@ public class GcmController{
         lblTotal.setText(String.valueOf(gcmTableView.getItems().size()));
     }
 
-    // @FXML
-    // public void save(){
-    //     if(!nameField.getText().trim().isEmpty()){
-    //         GcmModel gcmModel = new GcmModel();
-    //         //converte texto me Short antes de salvar
-    //         try {
-    //             String num = numberField.getText();
-    //             short number = Short.parseShort(num);
-    //             gcmModel.setNumber(number);
-    //         } catch (NumberFormatException e) {
-    //             e.printStackTrace();
-    //         }
-    //         gcmModel.setName(nameField.getText());
-    //         gcmModel.setEmail(emailField.getText());
-    //         gcmModel.setTag(tagField.getText());
-    //         gcmService.save(gcmModel);
-    //         list();
-    //         clear();
-    //     }else {
-    //         lblWarning.setVisible(true);
-    //     }
-    // }
-    // @FXML
-    // public void update(){
-    //     item.setName(nameField.getText());
-    //     item.setEmail(emailField.getText());
-    //     item.setTag(tagField.getText());
-    //     gcmService.save(item);
-    //     clear();
-    //     list();
-    // }
-    // @FXML
-    // public void delete(){
-    //     gcmService.deleteById(id);
-    //     clear();
-    //     list();
-    // }
+    //Insere icone "X" para apagar conteúdo do campo pesquisar
+    public void insertIconX(){
+        if(!searchTF.getText().isEmpty()){
+            if(searchHB.getChildren().size()<=1){//Se houver somente o campo de pesquisa no hbox cria icone X
+                FontIcon iconClear = new FontIcon(FontAwesomeSolid.TIMES);
+                iconClear.setIconColor(Color.GRAY);
+                iconClear.setCursor(Cursor.HAND);
+                searchHB.getChildren().addLast(iconClear);//insere icone X no Hbox
+                iconClear.setOnMouseClicked(event ->{//clicar no X limpa o campo de pesquisa e remove o icone do hbox
+                    searchTF.clear();
+                    searchHB.getChildren().removeLast();
+                });
+            }
+        }else{
+            if(searchHB.getChildren().size()>1){
+                searchHB.getChildren().removeLast(); 
+            }
+        }
+    }
 
-    //Método que limpa os campos id, nome, email
-    // @FXML
-    // public void clear(){
-    //     idField.clear();
-    //     numberField.clear();
-    //     nameField.clear();
-    //     emailField.clear();
-    //     tagField.clear();
+    //Transformar StatusEnum e UnitEnum em String pois o combobox é do tipo String para aceitar opção "todos"
+    public List<String> enumInString(String enumType){
+        List<String> listString = new ArrayList<>();
+        if(enumType.equals("Status")){
+            List<StatusEnum> listStatus = Arrays.asList(StatusEnum.values());
+            for (StatusEnum statusEnum : listStatus) {
+                listString.add(statusEnum.name()); 
+            }
+        }else if(enumType.equals("Unit")){
+            List<UnitEnum> listUnit = Arrays.asList(UnitEnum.values());
+            for (UnitEnum unitEnum : listUnit) {
+                listString.add(unitEnum.name());
+            }
+        }
+        listString.addFirst("Todos");
+        return listString;
+    }
 
-    //     saveButton.setVisible(true);
-    //     clearButton.setVisible(false);
-    //     updateButton.setVisible(false);
-    //     deleteButton.setVisible(false);
-    // }
-  
-    // @FXML
-    // public void searchTag() {
-    //     // Desabilita o botão na thread da aplicação
-    //     cardButton.setDisable(true);
-    //     tagField.clear();
+    //filtro de pesquisa dos radios buttons
+    private void filterRadioButton(String filterRB) {
+        if (filterRB == null || filterRB.isEmpty()) {
+            gcmTableView.setItems(FXCollections.observableArrayList(gcmService.findAll()));
+        } else if(nameRB.isSelected()){
+            gcmTableView.setItems(FXCollections.observableArrayList(
+                    gcmService.findAll().stream()
+                        .filter(gcm -> gcm.getName().toLowerCase().contains(filterRB))
+                        .collect(Collectors.toList())
+            ));
 
-    //     // Executa a operação de forma assíncrona em uma nova thread
-    //     new Thread(() -> {
-    //         String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
+        } else if(numberRB.isSelected()){
+            List<GcmModel> filteredList = gcmService.findAll().stream()
+                    .filter(gcm -> {
+                        Short prefix = gcm.getNumber();
+                        return prefix != null && prefix.toString().toLowerCase().contains(filterRB);
+                    })
+                    .collect(Collectors.toList());
+            gcmTableView.setItems(FXCollections.observableArrayList(filteredList));
 
-    //         // Atualiza a interface gráfica na thread da aplicação
-    //         Platform.runLater(() -> {
-    //             tagField.setText(result);
-    //             cardButton.setDisable(false); // Reabilita o botão após a operação
-    //         });
-    //     }).start();
-    // }
+        }else if(sutacheRB.isSelected()){
+            gcmTableView.setItems(FXCollections.observableArrayList(
+                    gcmService.findAll().stream()
+                        .filter(gcm -> gcm.getSutache().toLowerCase().contains(filterRB))
+                        .collect(Collectors.toList())
+            ));
+        }
+    }
+
+    //filtro de pesquisa Combobox
+    private void filterComboBox(String filterCB) {
+        String itemSelect;
+        if(filterCB.equals("statusCB")){
+            itemSelect = statusCB.getSelectionModel().getSelectedItem();
+            List<StatusEnum> listEnum = Arrays.asList(StatusEnum.values());
+            for (StatusEnum status : listEnum) {
+                if(status.name().equals(itemSelect)){
+                    gcmTableView.setItems(FXCollections.observableArrayList(gcmService.findByStatus(status)));
+                }
+                if(itemSelect.equals("Todos")){
+                    gcmTableView.setItems(FXCollections.observableArrayList(gcmService.findAll()));
+                }
+            }
+        }else if(filterCB.equals("unitCB")){
+            itemSelect = unitCB.getSelectionModel().getSelectedItem();
+            List<UnitEnum> listEnum = Arrays.asList(UnitEnum.values());
+            for (UnitEnum unit : listEnum) {
+                if(unit.name().equals(itemSelect)){
+                    gcmTableView.setItems(FXCollections.observableArrayList(gcmService.findByUnit(unit)));
+                }
+                if(itemSelect.equals("Todos")){
+                    gcmTableView.setItems(FXCollections.observableArrayList(gcmService.findAll()));
+                }
+            }
+        }
+    }
 }

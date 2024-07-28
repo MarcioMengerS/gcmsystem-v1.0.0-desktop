@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.gcmsystem.gcmsystemdesktop.enums.StatusEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.UnitEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.GcmModel;
 import br.com.gcmsystem.gcmsystemdesktop.repository.GcmRepository;
 
@@ -32,5 +34,13 @@ public class GcmService {
 
     public GcmModel findByNumber(short i){//tratar exceção
         return gcmRepository.findByNumber(i);
+    }
+
+    public List<GcmModel> findByStatus(StatusEnum status) {
+        return gcmRepository.findByStatus(status); 
+    }
+
+    public List<GcmModel> findByUnit(UnitEnum unit) {
+        return gcmRepository.findByUnit(unit);
     }
 }

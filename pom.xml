@@ -12,7 +12,7 @@
 	<artifactId>gcmsystemdesktop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gcmsystemdesktop</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Sistema de gestão de pessoas e materiais voltado para GCM</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>

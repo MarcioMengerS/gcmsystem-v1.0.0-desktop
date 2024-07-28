@@ -26,7 +26,13 @@ Resultado do building realizado com sucesso:
 >BUILD SUCCESS 
 >Total time:  41.223 s 
 >Finished at: 2024-07-14T10:37:40-03:00 
->Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+>Tests run: 1, Failures: 0, Errors: 0, Skipped: 0  
+
+### Tarefas:
+- ~~funcionalidade: atualização de agente da Guarda Municipal - 25/07/2024~~
+- funcionalidade: filtros de pesquisas de Guardas Municipais - 28/07/2024
+- funcionalidade: filtrar equipamento por localização - 28/07/2024
+- funcionalidade: inserir histórico de cautelas na guia equipamento do GCM - 28/07/2024
 
 #### Testar Pacote JAR
 Para testar o pacote criado pelo tópico anterior(BUILD), no terminal bash digitar a linha de comando abaixo, mas somente após criação do arquivo.jar:  
@@ -56,6 +62,14 @@ Ao executar aplicativo, usar o comando Maven para garantir que todas as dependê
 [INFO] Total time:  57.516 s  
 [INFO] Finished at: 2024-07-25T19:49:03-03:00  
 
+>[INFO] BUILD SUCCESS  
+[INFO] Total time:  50.930 s  
+[INFO] Finished at: 2024-07-28T08:14:24-03:00
+
+>[INFO] BUILD SUCCESS  
+[INFO] Total time:  48.102 s  
+[INFO] Finished at: 2024-07-28T17:26:28-03:00  
+
 ### Desenvolvimento, alterações e configurações decorridas da atualização do sistema  
 **Data:** 28/07/2024  
 **Arquivo(s) modificados:**  
@@ -69,9 +83,12 @@ searchTag()). Além de variável do tipo inteiro e do tipo GcmModel (id, item).
 `GcmService.java`  
 &nbsp;&nbsp;&nbsp;&nbsp; Modificado nome da variável user do tipo GcmModel para gm no metodo save().  
 `application.properties`  
-Modificado parâmetro de configuração do fuso horário do Banco de dados de UTC para America/Sao_Paulo.  
+&nbsp;&nbsp;&nbsp;&nbsp; Modificado parâmetro de configuração do fuso horário do Banco de dados de UTC para America/Sao_Paulo.  
 
 ---  
-**Data:**  
+**Data:**28/07/2024    
 **Arquivo(s) modificados:**  
-
+`GcmController.java`  
+&nbsp;&nbsp;&nbsp;&nbsp; Inserido método InsertIconX(), enumInString(), filterRadioButton, filterCombobox() e eventos no método initialize().
+`GcmService.java e GcmRepository.java`  
+&nbsp;&nbsp;&nbsp;&nbsp; Criação dos métodos findByStatus() e findByUnit().

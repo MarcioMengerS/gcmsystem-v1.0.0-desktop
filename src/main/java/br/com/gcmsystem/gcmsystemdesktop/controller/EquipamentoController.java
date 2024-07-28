@@ -117,7 +117,7 @@ public class EquipamentoController {
         //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa
         searchTF.setOnKeyTyped(event ->insertIconX());
     }
-
+    //Transformar CategoryEnum em String pois o combobox é do tipo String
     public List<String> enumInString(){
         List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
         List<String> listString = new ArrayList<>();
