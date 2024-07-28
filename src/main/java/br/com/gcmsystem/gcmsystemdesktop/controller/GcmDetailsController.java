@@ -1,6 +1,8 @@
 package br.com.gcmsystem.gcmsystemdesktop.controller;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,19 +41,19 @@ public class GcmDetailsController implements Initializable{
     @FXML
     private PasswordField passPF;
     @FXML
-    private TextField numberTF, nameTF, funionalEmailTF, boodTF, cpfTF, sutacheTF;
+    private TextField numberTF, nameTF, funionalEmailTF, bloodTF, cpfTF, sutacheTF;
     @FXML
-    private TextField phoneTF, genderTF, catCnhTF, emailTF, matriculationTF, rgTF, tagTF;
+    private TextField phoneTF, genderTF, catCnhTF, emailTF, matriculationTF, rgTF, tagTF, numWeaponTF;
     @FXML
-    private DatePicker valCnhDP, birthDP, admissDP;
+    private DatePicker valCnhDP, birthDP, admissDP, emissWeaponDP, valWeaponDP;
     @FXML
     private ComboBox<StatusEnum> statusCB ;
     @FXML
     private ComboBox<UnitEnum> unitCB;
     @FXML
-    private Button saveBTN, cardBTN, cancelBTN;
+    private Button saveBTN, cardBTN, cancelBTN, updateBTN;
     @FXML
-    private Label noticeL;
+    private Label idL, noticeL;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -78,7 +80,7 @@ public class GcmDetailsController implements Initializable{
         }
         gModel.setName(nameTF.getText());
         gModel.setFuncionalEmail(funionalEmailTF.getText());
-        gModel.setBlood(boodTF.getText());
+        gModel.setBlood(bloodTF.getText());
         gModel.setCpf(cpfTF.getText());
         gModel.setSutache(sutacheTF.getText());
         gModel.setPhone(phoneTF.getText());
@@ -96,6 +98,10 @@ public class GcmDetailsController implements Initializable{
         gModel.setUnit(unitSel);
         gModel.setTag(tagTF.getText());
         gModel.setTransactionPass(passPF.getText());
+        gModel.setCreatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).withNano(0));
+        gModel.setEmissionCarryWeapon(emissWeaponDP.getValue());
+        gModel.setValidityCarryWeapon(valWeaponDP.getValue());
+        gModel.setNumberCarryWeapon(numWeaponTF.getText());
  
         //Depois de setar todos atributos salva objeto GCM no banco
         gcmService.save(gModel);
@@ -138,9 +144,10 @@ public class GcmDetailsController implements Initializable{
     //Método chamado na linha 105 da classe GcmController.java
     //e pela propria classe
     public void getGcm(GcmModel gM){
+        idL.setText(gM.getId().toString());
         nameTF.setText(gM.getName());
         numberTF.setText(gM.getNumber().toString());
-        boodTF.setText(gM.getBlood());
+        bloodTF.setText(gM.getBlood());
         funionalEmailTF.setText(gM.getFuncionalEmail());
         cpfTF.setText(gM.getCpf());
         sutacheTF.setText(gM.getSutache());
@@ -156,7 +163,10 @@ public class GcmDetailsController implements Initializable{
         valCnhDP.setValue(gM.getValidityCnh());
         birthDP.setValue(gM.getBirth());
         admissDP.setValue(gM.getAdmissionDate());
-        if(!gM.getTag().isEmpty()){//se houver tag cadastrada mostra aviso na cor verde
+        emissWeaponDP.setValue(gM.getEmissionCarryWeapon());
+        valWeaponDP.setValue(gM.getValidityCarryWeapon());
+        numWeaponTF.setText(gM.getNumberCarryWeapon());
+        if(!gM.getTag().equals(null)&!gM.getTag().isEmpty()){//se houver tag cadastrada mostra aviso na cor verde
             BackgroundFill backgroundFill =
             new BackgroundFill(
                     Color.valueOf("#8fff49"),//verde agua
@@ -172,5 +182,44 @@ public class GcmDetailsController implements Initializable{
             noticeL.setVisible(true);
         }
         tagTF.setText(gM.getTag());
+        updateBTN.setVisible(true);
+        saveBTN.setVisible(false);
+    }
+
+    @FXML
+    public void update(){
+        GcmModel gcmModel = new GcmModel();
+        gcmModel = gcmService.findById(Integer.parseInt(idL.getText()));//exceção caso não retorne o id
+        gcmModel.setName(nameTF.getText());
+        gcmModel.setGender(genderTF.getText());
+        gcmModel.setEmail(emailTF.getText());
+        gcmModel.setPhone(phoneTF.getText());
+        gcmModel.setCpf(cpfTF.getText());//Execção para caso o cpf já exista no banco
+        gcmModel.setRg(rgTF.getText());
+        gcmModel.setBirth(birthDP.getValue());
+        gcmModel.setCatCnh(catCnhTF.getText());
+        gcmModel.setValidityCnh(valCnhDP.getValue());
+        gcmModel.setBlood(bloodTF.getText());
+
+        gcmModel.setStatus(statusCB.getValue());
+        gcmModel.setUnit(unitCB.getValue());
+        gcmModel.setModifyAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).withNano(0));
+        gcmModel.setNumber(Short.parseShort(numberTF.getText()));
+        gcmModel.setSutache(sutacheTF.getText());
+        gcmModel.setFuncionalEmail(funionalEmailTF.getText());
+        gcmModel.setAdmissionDate(admissDP.getValue());
+        gcmModel.setMatriculation(matriculationTF.getText());
+        gcmModel.setTransactionPass(passPF.getText());
+        gcmModel.setTag(tagTF.getText());
+        gcmModel.setEmissionCarryWeapon(emissWeaponDP.getValue());
+        gcmModel.setValidityCarryWeapon(valWeaponDP.getValue());
+        gcmModel.setNumberCarryWeapon(numWeaponTF.getText());
+        
+        gcmService.save(gcmModel);
+        
+        gcmController.list();
+        //fecha a janela após cadastro
+        Stage stage = (Stage) saveBTN.getScene().getWindow();
+        stage.close();
     }
 }

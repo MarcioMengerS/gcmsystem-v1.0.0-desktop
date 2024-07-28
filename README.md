@@ -9,7 +9,7 @@ Pacotes adicionados manualmente:
 * java.time.LocalDateTime - manipular data e hora
 
 ### Build
-Para empacotar o código compilado de acordo com o empacotamento escolhido em formato JAR, no terminal bash digitar: <b>mvn package</b>. Nesse processo o MAVEN realiza a compilação, executa os testes, empacota o código, apresenta os resultados e na pasta target cria o arquivo **[gcmsystemdesktop-0-0-1-SNAPSHOT](target/gcmsystemdesktop-0.0.1-SNAPSHOT.jar)**. Outra forma de buildar o projeto é: ./mvn spring-boot:run. Alternativamente, pode construir o arquivo JAR ./mvn clean package e depois executá-lo, da seguinte maneira: java -jar destino/gs-validating-form-input-0.1.0.jar  
+Para empacotar o código compilado de acordo com o empacotamento escolhido em formato JAR, no terminal bash digitar: **mvn package**. Nesse processo o MAVEN realiza a compilação, executa os testes, empacota o código, apresenta os resultados e na pasta target cria o arquivo [gcmsystemdesktop-0-0-1-SNAPSHOT](target/gcmsystemdesktop-0.0.1-SNAPSHOT.jar). Outra forma de buildar o projeto é: ./mvn spring-boot:run. Alternativamente, pode construir o arquivo JAR ./mvn clean package e depois executá-lo, da seguinte maneira: java -jar destino/gs-validating-form-input-0.1.0.jar  
 Resultado do building realizado com sucesso:  
  
 **Utilizado o comando "mvn clean package" no build abaixo:**  
@@ -52,6 +52,26 @@ Ao executar aplicativo, usar o comando Maven para garantir que todas as dependê
 [INFO] Total time:  05:17 h  
 [INFO] Finished at: 2024-07-20T17:05:34-03:00
 
->[INFO] BUILD SUCCESS
-[INFO] Total time:  57.516 s
-[INFO] Finished at: 2024-07-25T19:49:03-03:00
+>[INFO] BUILD SUCCESS  
+[INFO] Total time:  57.516 s  
+[INFO] Finished at: 2024-07-25T19:49:03-03:00  
+
+### Desenvolvimento, alterações e configurações decorridas da atualização do sistema  
+**Data:** 28/07/2024  
+**Arquivo(s) modificados:**  
+`GcmController.java e gcm.xml`  
+&nbsp;&nbsp;&nbsp;&nbsp; Retirada de buttons, TextFields, Label e seus respectivos métodos(addListener(), selectedItem(), save(), update(), delete, clear(),   
+searchTag()). Além de variável do tipo inteiro e do tipo GcmModel (id, item).  
+`GcmDetailsController.java e details-gcm.fxml`  
+&nbsp;&nbsp;&nbsp;&nbsp;Adicionado buttons, TextFields, Label, DatePickers. Modificados os métodos save(), getGcm(). Criado método update().  
+`GcmModel.java`  
+&nbsp;&nbsp;&nbsp;&nbsp;Adicionada as variáveis tag, emissionCarryWeapon, validityCarryWeapon, numberCarryWeapon dos tipos String e LocalDate.  
+`GcmService.java`  
+&nbsp;&nbsp;&nbsp;&nbsp; Modificado nome da variável user do tipo GcmModel para gm no metodo save().  
+`application.properties`  
+Modificado parâmetro de configuração do fuso horário do Banco de dados de UTC para America/Sao_Paulo.  
+
+---  
+**Data:**  
+**Arquivo(s) modificados:**  
+

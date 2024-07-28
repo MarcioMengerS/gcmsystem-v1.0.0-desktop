@@ -14,8 +14,8 @@ public class GcmService {
     @Autowired
     private GcmRepository gcmRepository;
 
-    public void save(GcmModel user) {
-        gcmRepository.save(user);
+    public void save(GcmModel gm) {
+        gcmRepository.save(gm);
     }
 
     public List<GcmModel> findAll() {

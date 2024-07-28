@@ -48,8 +48,11 @@ public class GcmModel {
     private LocalDate admissionDate;//Data de admissão na PMPA
     private String matriculation; //matrícula
     private String transactionPass; //senha para transação
-    private String tag;
-    
+    private String tag;//cartão de efetividade do servidor
+    private LocalDate emissionCarryWeapon;// data de emmissão porte de arma
+    private LocalDate validityCarryWeapon; //data de validade porte de arma
+    private String numberCarryWeapon;//número do porte de arma
+
     @OneToMany(mappedBy = "gcm")
     private List<RegisterModel> registrations;
 
