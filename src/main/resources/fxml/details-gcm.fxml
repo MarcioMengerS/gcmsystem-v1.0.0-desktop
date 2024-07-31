@@ -39,9 +39,8 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="263.0" prefWidth="443.0">
                            <children>
-                              <TextField fx:id="phoneTF" layoutX="22.0" layoutY="36.0" prefHeight="30.0" prefWidth="156.0" promptText="Telefone" />
-                              <TextField fx:id="genderTF" layoutX="190.0" layoutY="36.0" prefHeight="30.0" prefWidth="93.0" promptText="Gênero" />
-                              <TextField fx:id="matriculationTF" layoutX="293.0" layoutY="36.0" prefHeight="30.0" prefWidth="131.0" promptText="Matrícula" />
+                              <TextField fx:id="phoneTF" layoutX="22.0" layoutY="36.0" prefHeight="30.0" prefWidth="144.0" promptText="Telefone" />
+                              <TextField fx:id="matriculationTF" layoutX="300.0" layoutY="36.0" prefHeight="30.0" prefWidth="124.0" promptText="Matrícula" />
                               <DatePicker fx:id="birthDP" layoutX="23.0" layoutY="79.0" prefHeight="30.0" prefWidth="190.0" promptText="Nascimento" />
                               <DatePicker fx:id="admissDP" layoutX="224.0" layoutY="79.0" prefHeight="30.0" prefWidth="200.0" promptText="Admissão" />
                               <TextField fx:id="emailTF" layoutX="23.0" layoutY="129.0" prefHeight="30.0" prefWidth="236.0" promptText="Email pessoal" />
@@ -56,6 +55,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
+                              <ComboBox fx:id="genderCB" layoutX="178.0" layoutY="36.0" prefHeight="30.0" prefWidth="112.0" promptText="Gênero" />
                            </children>
                         </AnchorPane>
                   </content>

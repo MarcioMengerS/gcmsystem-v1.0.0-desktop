@@ -30,9 +30,10 @@ Resultado do building realizado com sucesso:
 
 ### Tarefas:
 - ~~funcionalidade: atualização de agente da Guarda Municipal - 25/07/2024~~
-- funcionalidade: filtros de pesquisas de Guardas Municipais - 28/07/2024
+- ~~funcionalidade: filtros de pesquisas de Guardas Municipais - 28/07/2024~~
 - funcionalidade: filtrar equipamento por localização - 28/07/2024
 - funcionalidade: inserir histórico de cautelas na guia equipamento do GCM - 28/07/2024
+- ~~Inserir classe enum para escolha de gênero: MASCULINO e FEMININO - 31/07/2024~~
 
 #### Testar Pacote JAR
 Para testar o pacote criado pelo tópico anterior(BUILD), no terminal bash digitar a linha de comando abaixo, mas somente após criação do arquivo.jar:  
@@ -86,9 +87,19 @@ searchTag()). Além de variável do tipo inteiro e do tipo GcmModel (id, item).
 &nbsp;&nbsp;&nbsp;&nbsp; Modificado parâmetro de configuração do fuso horário do Banco de dados de UTC para America/Sao_Paulo.  
 
 ---  
-**Data:**28/07/2024    
+**Data:** 28/07/2024    
 **Arquivo(s) modificados:**  
 `GcmController.java`  
 &nbsp;&nbsp;&nbsp;&nbsp; Inserido método InsertIconX(), enumInString(), filterRadioButton, filterCombobox() e eventos no método initialize().
 `GcmService.java e GcmRepository.java`  
 &nbsp;&nbsp;&nbsp;&nbsp; Criação dos métodos findByStatus() e findByUnit().
+
+---  
+**Data:** 31/07/2024    
+**Arquivo(s) modificados:**  
+`GcmModel.java, GcmDetailsController.java e details-gcm.fxml`  
+&nbsp;&nbsp;&nbsp;&nbsp;  Modificação de variáveis trabalhar com enum (GenderEnum.java)
+`GenderEnum.java`  
+&nbsp;&nbsp;&nbsp;&nbsp; Criação de Enum para Gênero
+`UnitEnum.java`  
+&nbsp;&nbsp;&nbsp;&nbsp; Organização das siglas da classe UnitEnum.java

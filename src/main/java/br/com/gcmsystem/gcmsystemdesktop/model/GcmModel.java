@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.gcmsystem.gcmsystemdesktop.enums.GenderEnum;
 import br.com.gcmsystem.gcmsystemdesktop.enums.StatusEnum;
 import br.com.gcmsystem.gcmsystemdesktop.enums.UnitEnum;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ public class GcmModel {
     private Integer id;
     //pessoal
     private String name;
-    private String gender;
+    private GenderEnum gender;
     private String email;
     private String phone;
     private String cpf;

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import br.com.gcmsystem.gcmsystemdesktop.enums.GenderEnum;
 import br.com.gcmsystem.gcmsystemdesktop.enums.StatusEnum;
 import br.com.gcmsystem.gcmsystemdesktop.enums.UnitEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.GcmModel;
@@ -43,13 +44,15 @@ public class GcmDetailsController implements Initializable{
     @FXML
     private TextField numberTF, nameTF, funionalEmailTF, bloodTF, cpfTF, sutacheTF;
     @FXML
-    private TextField phoneTF, genderTF, catCnhTF, emailTF, matriculationTF, rgTF, tagTF, numWeaponTF;
+    private TextField phoneTF, catCnhTF, emailTF, matriculationTF, rgTF, tagTF, numWeaponTF;
     @FXML
     private DatePicker valCnhDP, birthDP, admissDP, emissWeaponDP, valWeaponDP;
     @FXML
     private ComboBox<StatusEnum> statusCB ;
     @FXML
     private ComboBox<UnitEnum> unitCB;
+    @FXML
+    private ComboBox<GenderEnum> genderCB;
     @FXML
     private Button saveBTN, cardBTN, cancelBTN, updateBTN;
     @FXML
@@ -58,7 +61,8 @@ public class GcmDetailsController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         statusCB.getItems().setAll(StatusEnum.values());
-        unitCB.getItems().setAll(UnitEnum.values());        
+        unitCB.getItems().setAll(UnitEnum.values());
+        genderCB.getItems().setAll(GenderEnum.values());     
     }
 
     @FXML
@@ -84,7 +88,7 @@ public class GcmDetailsController implements Initializable{
         gModel.setCpf(cpfTF.getText());
         gModel.setSutache(sutacheTF.getText());
         gModel.setPhone(phoneTF.getText());
-        gModel.setGender(genderTF.getText());
+        gModel.setGender(genderCB.getSelectionModel().getSelectedItem());
         gModel.setCatCnh(catCnhTF.getText());
         gModel.setValidityCnh(valCnhDP.getValue());
         gModel.setBirth(birthDP.getValue());
@@ -152,7 +156,7 @@ public class GcmDetailsController implements Initializable{
         cpfTF.setText(gM.getCpf());
         sutacheTF.setText(gM.getSutache());
         phoneTF.setText(gM.getPhone());
-        genderTF.setText(gM.getGender());
+        genderCB.getSelectionModel().select(gM.getGender());
         catCnhTF.setText(gM.getCatCnh());
         emailTF.setText(gM.getEmail());
         matriculationTF.setText(gM.getMatriculation());
@@ -191,7 +195,7 @@ public class GcmDetailsController implements Initializable{
         GcmModel gcmModel = new GcmModel();
         gcmModel = gcmService.findById(Integer.parseInt(idL.getText()));//exceção caso não retorne o id
         gcmModel.setName(nameTF.getText());
-        gcmModel.setGender(genderTF.getText());
+        gcmModel.setGender(genderCB.getValue());
         gcmModel.setEmail(emailTF.getText());
         gcmModel.setPhone(phoneTF.getText());
         gcmModel.setCpf(cpfTF.getText());//Execção para caso o cpf já exista no banco
