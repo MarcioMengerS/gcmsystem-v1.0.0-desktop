@@ -29,15 +29,15 @@ Resultado do building realizado com sucesso:
 >Tests run: 1, Failures: 0, Errors: 0, Skipped: 0  
 
 ### Tarefas:
-- ~~funcionalidade: atualização de agente da Guarda Municipal - 25/07/2024~~
-- ~~funcionalidade: filtros de pesquisas de Guardas Municipais - 28/07/2024~~
-- funcionalidade: filtrar equipamento por localização - 28/07/2024
-- funcionalidade: inserir histórico de cautelas na guia equipamento do GCM - 28/07/2024
+- ~~Atualização de agente da Guarda Municipal - 25/07/2024~~
+- ~~Filtros de pesquisas de Guardas Municipais - 28/07/2024~~
+- ~~Filtrar equipamento por localização - 28/07/2024~~
+- Inserir histórico de cautelas na guia equipamento do GCM - 28/07/2024
 - ~~Inserir classe enum para escolha de gênero: MASCULINO e FEMININO - 31/07/2024~~
-- ~~funcionalidade: criptografar senha para consolidar no banco - 31/07/2024~~
-- ~~funcionalidade: implementar senha junto com crachá para retirada de equipamento - 31/07/2024~~
-- funcionalidade: criptografar código do crachá para consolidar no banco - 06/08/2024
-- funcionalidade: Solicitar senha ao devolver equipamento - 06/08/2024
+- ~~Criptografar senha para consolidar no banco - 31/07/2024~~
+- ~~Implementar senha junto com crachá para retirada de equipamento - 31/07/2024~~
+- Criptografar código do crachá para consolidar no banco - 06/08/2024
+- Solicitar senha ao devolver equipamento - 06/08/2024
 
 #### Testar Pacote JAR
 Para testar o pacote criado pelo tópico anterior(BUILD), no terminal bash digitar a linha de comando abaixo, mas somente após criação do arquivo.jar:  
@@ -73,6 +73,9 @@ Ao executar aplicativo, usar o comando Maven para garantir que todas as dependê
  
 >[INFO] Total time:  32.637 s  
 [INFO] Finished at: 2024-08-06T10:00:48-03:00
+
+>[INFO] Total time:  31.892 s  
+[INFO] Finished at: 2024-08-06T15:01:15-03:00
 
 ### Desenvolvimento, alterações e configurações decorridas da atualização do sistema  
 **Data:** 28/07/2024  
@@ -120,3 +123,11 @@ searchTag()). Além de variável do tipo inteiro e do tipo GcmModel (id, item).
 &nbsp;&nbsp;&nbsp;&nbsp;  Imagem inserida na janela destinada a senha de transação  
 `SecurityConfiguration.java`  
 &nbsp;&nbsp;&nbsp;&nbsp;  Configuração de criptografia de dados no banco  
+
+---  
+**Data:** 06/08/2024    
+**Arquivo(s) modificados:**  
+`EquipamentoController.java`   
+&nbsp;&nbsp;&nbsp;&nbsp;  Encapsulamento de função list(), inserida variável combobox e função para filtrar por localização do equipamento, modificada a função enumInString() e criada a função filterList()
+`EquipmentService.java e EquipmentRepository.java`  
+&nbsp;&nbsp;&nbsp;&nbsp;  Criada a função findByLocation()  

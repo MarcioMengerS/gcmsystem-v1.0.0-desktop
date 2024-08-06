@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.LocationEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.repository.EquipmentRepository;
 
@@ -33,6 +34,10 @@ public class EquipmentService {
 
     public List<EquipmentModel> findByCategory(CategoryEnum category){
         return equipmentRepository.findByCategory(category);
+    }
+
+    public List<EquipmentModel> findByLocation(LocationEnum location){
+        return equipmentRepository.findByLocation(location);
     }
 
     public EquipmentModel findBySerie(String serie){

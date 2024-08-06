@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.LocationEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 
 public interface EquipmentRepository extends JpaRepository<EquipmentModel, Integer>{
@@ -13,5 +14,6 @@ public interface EquipmentRepository extends JpaRepository<EquipmentModel, Integ
     EquipmentModel findByRegistrationNumber(Integer numRg);
     List<EquipmentModel> findByCategory(CategoryEnum category);
     Optional<EquipmentModel> findBySerie(String serie);
-    EquipmentModel findByPrefix(Integer prefix);   
+    EquipmentModel findByPrefix(Integer prefix);
+    List<EquipmentModel> findByLocation(LocationEnum location);   
 }

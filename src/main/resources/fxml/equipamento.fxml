@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.EquipamentoController">
+<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.EquipamentoController">
    <center>
       <Pane prefHeight="600.0" prefWidth="850.0" BorderPane.alignment="CENTER">
          <children>
@@ -27,11 +27,12 @@
                <children>
                   <TableView fx:id="equipmentTableView" layoutX="39.0" layoutY="-69.0" prefHeight="415.0" prefWidth="775.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
-                        <TableColumn fx:id="categoryColumn" prefWidth="187.0" text="Categoria" />
-                      <TableColumn fx:id="modelColumn" prefWidth="106.0" text="Modelo" />
-                        <TableColumn fx:id="registerColumn" prefWidth="102.0" text="Patrimônio" />
-                        <TableColumn fx:id="serieColumn" prefWidth="129.0" text="Nº Série" />
-                        <TableColumn fx:id="prefixColumn" prefWidth="131.0" text="Prefixo" />
+                        <TableColumn fx:id="categoryColumn" prefWidth="167.0" text="Categoria" />
+                      <TableColumn fx:id="modelColumn" prefWidth="105.0" text="Modelo" />
+                        <TableColumn fx:id="registerColumn" prefWidth="93.0" text="Patrimônio" />
+                        <TableColumn fx:id="serieColumn" prefWidth="110.0" text="Nº Série" />
+                        <TableColumn fx:id="prefixColumn" prefWidth="83.0" text="Prefixo" />
+                        <TableColumn fx:id="locationColumn" prefWidth="93.0" text="Localização" />
                     </columns>
                   </TableView>
                </children>
@@ -50,15 +51,16 @@
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Label>
-            <Button fx:id="saveButton" layoutX="594.0" layoutY="95.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="170.0" text="Adicionar Equipamento">
+            <Button fx:id="saveButton" layoutX="679.0" layoutY="125.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="133.0" text="Adicionar Equipamento" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="13.0" />
                </font>
             </Button>
-            <ComboBox fx:id="filterCategoryCB" layoutX="363.0" layoutY="97.0" prefHeight="31.0" prefWidth="190.0" promptText="Filtrar por categoria" visibleRowCount="5" />
-            <HBox fx:id="searchHB" alignment="CENTER_LEFT" layoutX="49.0" layoutY="97.0" prefHeight="28.0" prefWidth="208.0">
+            <Label layoutX="287.0" layoutY="72.0" text="Categoria" />
+            <ComboBox fx:id="filterCategoryCB" layoutX="287.0" layoutY="96.0" prefHeight="25.0" prefWidth="127.0" visibleRowCount="5" />
+            <HBox fx:id="searchHB" alignment="CENTER_LEFT" layoutX="49.0" layoutY="97.0" prefHeight="25.0" prefWidth="203.0">
                <children>
-                  <TextField fx:id="searchTF" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="211.0" promptText="Pesquisar">
+                  <TextField fx:id="searchTF" alignment="TOP_LEFT" prefHeight="33.0" prefWidth="204.0" promptText="Pesquisar">
                      <HBox.margin>
                         <Insets right="4.0" />
                      </HBox.margin>
@@ -76,6 +78,8 @@
                   <RadioButton fx:id="registrationNumberRB" mnemonicParsing="false" text="Patrimônio" toggleGroup="$search" />
                </children>
             </HBox>
+            <ComboBox fx:id="filterLocationCB" layoutX="453.0" layoutY="96.0" prefHeight="25.0" prefWidth="134.0" visibleRowCount="5" />
+            <Label layoutX="453.0" layoutY="72.0" text="Localização" />
          </children>
          <BorderPane.margin>
             <Insets right="4.0" />

@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
+import br.com.gcmsystem.gcmsystemdesktop.enums.LocationEnum;
 import br.com.gcmsystem.gcmsystemdesktop.model.EquipmentModel;
 import br.com.gcmsystem.gcmsystemdesktop.service.EquipmentService;
 import javafx.collections.FXCollections;
@@ -52,7 +53,7 @@ public class EquipamentoController {
     @FXML
     private HBox searchHB;
     @FXML
-    private ComboBox<String> filterCategoryCB;
+    private ComboBox<String> filterCategoryCB, filterLocationCB;
     @FXML
     private TextField searchTF;
     @FXML
@@ -68,18 +69,12 @@ public class EquipamentoController {
     @FXML
     private TableColumn<EquipmentModel, CategoryEnum> categoryColumn;
     @FXML
+    private TableColumn<EquipmentModel, LocationEnum> locationColumn;
+    @FXML
     private FontIcon clearField;
 
     public void initialize(){
-        // Método usado para carregar e exibir a lista de equipamentos
-        modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
-        prefixColumn.setCellValueFactory(new PropertyValueFactory<>("prefix"));
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-        registerColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
-        serieColumn.setCellValueFactory(new PropertyValueFactory<>("serie"));
-
         list();
-
         saveButton.setOnAction(event->{
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/details-equip.fxml"));
@@ -98,39 +93,66 @@ public class EquipamentoController {
 
         addIconToTable();
         // Configurar evento de busca
-        searchTF.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterTable(newValue.toLowerCase());
+        searchTF.textProperty().addListener((observable, oldValue, newValue) -> filterTable(newValue.toLowerCase()));
+        //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa
+        searchTF.setOnKeyTyped(event -> insertIconX());
+        searchTF.setOnMouseClicked(event->{
+            filterCategoryCB.getSelectionModel().clearSelection();
+            filterLocationCB.getSelectionModel().clearSelection();
         });
 
-        filterCategoryCB.getItems().setAll(enumInString());
-        filterCategoryCB.setOnAction((event)->{ 
-            String itemSelect = filterCategoryCB.getSelectionModel().getSelectedItem();
-            List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
-            for (CategoryEnum cat : listEnum) {
-                if(cat.name().equals(itemSelect)){
-                    equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findByCategory(cat)));
-                }
-                if(itemSelect.equals("Todos")){
-                    equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findAll()));
-                }
-            }
+        filterLocationCB.getItems().setAll(enumInString(LocationEnum.class));
+        filterLocationCB.setOnAction(event->{filterList(filterLocationCB, LocationEnum.class);});
+        filterLocationCB.setOnMouseClicked(event->{
+            filterCategoryCB.getSelectionModel().clearSelection();
+            searchTF.clear();
         });
-        //Quando uma tecla geradora de caracteres é digitada mostra icone "X" no campo de pesquisa
-        searchTF.setOnKeyTyped(event ->insertIconX());
+
+        filterCategoryCB.getItems().setAll(enumInString(CategoryEnum.class));
+        filterCategoryCB.setOnAction(event->filterList(filterCategoryCB, CategoryEnum.class));
+        filterCategoryCB.setOnMouseClicked(event->{
+            filterLocationCB.getSelectionModel().clearSelection();
+            searchTF.clear();
+        });
     }
     //Transformar CategoryEnum em String pois o combobox é do tipo String
-    public List<String> enumInString(){
-        List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
-        List<String> listString = new ArrayList<>();
-        for (int i = 0; i < listEnum.size(); i++) {
-            listString.add(listEnum.get(i).name());
+    public <T extends Enum<T>> List<String> enumInString(Class<T> enumCass){
+        List<T> enumList = Arrays.asList(enumCass.getEnumConstants());
+        List<String> stringList = new ArrayList<>();
+        for (T enumValue : enumList) {
+            stringList.add(enumValue.name());
         }
-        listString.addFirst("Todos");
-        return listString;
+        stringList.addFirst("Todos");
+        return stringList;
+    }
+    public <T extends Enum<T>> void filterList(ComboBox <String> comboBox, Class<T> enumClass){
+        String selectedItem = comboBox.getSelectionModel().getSelectedItem();
+
+        if (selectedItem != null) { // Check for null selection
+            if(enumClass==CategoryEnum.class){
+                List<CategoryEnum> listEnum = Arrays.asList(CategoryEnum.values());
+
+                for (CategoryEnum cat : listEnum) {
+                    if(cat.name().equals(selectedItem)){
+                            equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findByCategory(cat)));
+                        return;
+                    }
+                }
+            } else if (enumClass == LocationEnum.class) {
+                List<LocationEnum> listEnum = Arrays.asList(LocationEnum.values());
+    
+                for (LocationEnum loc : listEnum) {
+                    if (loc.name().equals(selectedItem)) {
+                        equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findByLocation(loc)));
+                        return;
+                    }
+                }
+            }
+        }
+        equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findAll()));
     }
 
     public void insertIconX(){
-
         if(!searchTF.getText().isEmpty()){
             if(searchHB.getChildren().size()<=1){//Se houver somente o campo de pesquisa no hbox cria icone X
                 FontIcon iconClear = new FontIcon(FontAwesomeSolid.TIMES);
@@ -302,6 +324,14 @@ public class EquipamentoController {
     }
 
     public void list(){
+        // Método usado para carregar e exibir a lista de equipamentos
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
+        registerColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNumber"));
+        serieColumn.setCellValueFactory(new PropertyValueFactory<>("serie"));
+        prefixColumn.setCellValueFactory(new PropertyValueFactory<>("prefix"));
+        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+
         equipmentTableView.setItems(FXCollections.observableArrayList(equipmentService.findAll()));
         lblTotal.setText(String.valueOf(equipmentTableView.getItems().size()));
     }
