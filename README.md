@@ -34,10 +34,14 @@ Resultado do building realizado com sucesso:
 - funcionalidade: filtrar equipamento por localização - 28/07/2024
 - funcionalidade: inserir histórico de cautelas na guia equipamento do GCM - 28/07/2024
 - ~~Inserir classe enum para escolha de gênero: MASCULINO e FEMININO - 31/07/2024~~
+- ~~funcionalidade: criptografar senha para consolidar no banco - 31/07/2024~~
+- ~~funcionalidade: implementar senha junto com crachá para retirada de equipamento - 31/07/2024~~
+- funcionalidade: criptografar código do crachá para consolidar no banco - 06/08/2024
+- funcionalidade: Solicitar senha ao devolver equipamento - 06/08/2024
 
 #### Testar Pacote JAR
 Para testar o pacote criado pelo tópico anterior(BUILD), no terminal bash digitar a linha de comando abaixo, mas somente após criação do arquivo.jar:  
-**java -jar target/gcmsystemdesktop-0.0.1-SNAPSHOT.jar**
+**java -jar target/gcmsystemdesktop-0.0.1-SNAPSHOT.jar** Sem mostrar termila usar: **javaw -jar target/gcmsystemdesktop-0.0.1-SNAPSHOT.jar**
 >Dia 29/06/2024 apresentou o seguinte aviso:   
 WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @298e7f7b'  
 
@@ -54,22 +58,21 @@ Ao executar aplicativo, usar o comando Maven para garantir que todas as dependê
 >[INFO] BUILD SUCCESS  
 [INFO] Total time:  55.722 s  
 [INFO] Finished at: 2024-07-14T16:55:09-03:00 
-
->[INFO] BUILD SUCCESS  
-[INFO] Total time:  05:17 h  
+ 
+>[INFO] Total time:  05:17 h  
 [INFO] Finished at: 2024-07-20T17:05:34-03:00
 
->[INFO] BUILD SUCCESS  
-[INFO] Total time:  57.516 s  
+>[INFO] Total time:  57.516 s  
 [INFO] Finished at: 2024-07-25T19:49:03-03:00  
 
->[INFO] BUILD SUCCESS  
-[INFO] Total time:  50.930 s  
+>[INFO] Total time:  50.930 s  
 [INFO] Finished at: 2024-07-28T08:14:24-03:00
 
->[INFO] BUILD SUCCESS  
-[INFO] Total time:  48.102 s  
+>[INFO] Total time:  48.102 s  
 [INFO] Finished at: 2024-07-28T17:26:28-03:00  
+ 
+>[INFO] Total time:  32.637 s  
+[INFO] Finished at: 2024-08-06T10:00:48-03:00
 
 ### Desenvolvimento, alterações e configurações decorridas da atualização do sistema  
 **Data:** 28/07/2024  
@@ -103,3 +106,17 @@ searchTag()). Além de variável do tipo inteiro e do tipo GcmModel (id, item).
 &nbsp;&nbsp;&nbsp;&nbsp; Criação de Enum para Gênero
 `UnitEnum.java`  
 &nbsp;&nbsp;&nbsp;&nbsp; Organização das siglas da classe UnitEnum.java
+
+---  
+**Data:** 06/08/2024    
+**Arquivo(s) modificados:**  
+`GcmController.java e EquipamentoController.java`   
+&nbsp;&nbsp;&nbsp;&nbsp;  Desativada função de maximizar janela  
+`RegisterController.java`   
+&nbsp;&nbsp;&nbsp;&nbsp;  Implementada função confirmPassord() onde cria janela para inserir e logo após verificar senha digitada pelo GCM.  
+`GcmService.java`  
+&nbsp;&nbsp;&nbsp;&nbsp;  Implementada criptografia tipo BPCrypt na senha no método save()  
+`pass.png`  
+&nbsp;&nbsp;&nbsp;&nbsp;  Imagem inserida na janela destinada a senha de transação  
+`SecurityConfiguration.java`  
+&nbsp;&nbsp;&nbsp;&nbsp;  Configuração de criptografia de dados no banco  

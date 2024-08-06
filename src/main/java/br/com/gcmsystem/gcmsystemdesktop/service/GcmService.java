@@ -3,6 +3,7 @@ package br.com.gcmsystem.gcmsystemdesktop.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.StatusEnum;
@@ -17,6 +18,7 @@ public class GcmService {
     private GcmRepository gcmRepository;
 
     public void save(GcmModel gm) {
+        gm.setTransactionPass(new BCryptPasswordEncoder().encode(gm.getTransactionPass()));
         gcmRepository.save(gm);
     }
 

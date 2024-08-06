@@ -12,6 +12,7 @@ import org.controlsfx.control.textfield.TextFields;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import br.com.gcmsystem.gcmsystemdesktop.enums.CategoryEnum;
@@ -32,7 +33,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -41,7 +46,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -103,23 +111,68 @@ public class RegisterController implements Initializable{
     //Empréstimo de equipamento. Thread para leitura do Crachá
     @FXML
     public void loan() {
-        // Desabilita o botão na thread da aplicação
-        loanButton.setDisable(true);
-        resultRfid.setText("");
 
-        // Executa a operação de forma assíncrona em uma nova thread
-        new Thread(() -> {
-            String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
+        if(confirmPassword()){
+            // Desabilita o botão na thread da aplicação
+            loanButton.setDisable(true);
+            resultRfid.setText("");   
+            // Executa a operação de forma assíncrona em uma nova thread
+            new Thread(() -> {
+                String result = UsbMonitor.monitorarUSB(); // Leitura do cartão RFID de forma síncrona
 
-            // Atualiza a interface gráfica na thread da aplicação
-            Platform.runLater(() -> {
-                associate(result);
-                loanButton.setDisable(false); // Reabilita o botão após a operação
-            });
-        }).start();
+                // Atualiza a interface gráfica na thread da aplicação
+                Platform.runLater(() -> {
+                    associate(result);
+                    loanButton.setDisable(false); // Reabilita o botão após a operação
+                });
+            }).start();
+        }
+    }
+    
+    //Confirma senha digitada do GCM
+    public boolean confirmPassword(){
+        boolean confirmed = false;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String numberGcm = gcmTF.getText();
+        GcmModel gcmModel = gcmService.findByNumber(Short.parseShort(numberGcm));
+
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Confirme a senha");
+        dialog.setHeaderText("Digite a senha para efetuar cautela");
+        // dialog.setGraphic(new Circle(15, Color.RED)); // Circle red custom graphic
+        ImageView imagePass = new ImageView(new Image(getClass().getResourceAsStream("/images/pass.png")));//icone senha
+        dialog.setGraphic(imagePass);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        
+        PasswordField pwd = new PasswordField();
+        HBox content = new HBox();
+        content.setAlignment(Pos.CENTER_LEFT);
+        content.setSpacing(10);
+        content.getChildren().addAll(new Label("Password:"), pwd);
+        dialog.getDialogPane().setContent(content);
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return pwd.getText();
+            }
+            return null;
+        });
+        //capture resposta
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            if(encoder.matches(result.get(), gcmModel.getTransactionPass())) {
+                System.out.println("Password is success");
+                System.out.println(result.get());
+                confirmed = true;
+            }else{
+                System.out.println("Password is incorrect");//criar alerta de erro de senha
+            }
+        } else {
+            System.out.println("Dialog was cancelled or closed without input.");
+        }
+        return confirmed;
     }
 
-    //Realiza emprestimo do equipamento e registra histórico
+    //Realiza empréstimo do equipamento e registra histórico
     public void associate(String result){
         String numberGcm = gcmTF.getText();
         GcmModel gcmModel = gcmService.findByNumber(Short.parseShort(numberGcm));
@@ -158,13 +211,6 @@ public class RegisterController implements Initializable{
         }
         list();
         loanButton.setDisable(false);
-    }
-    
-    @FXML
-    public void findById(){
-        Optional<RegisterModel> register = registerService.findById(4);
-
-        System.out.println(register.get().getEquipment().getBrand());
     }
 
     public void list(){

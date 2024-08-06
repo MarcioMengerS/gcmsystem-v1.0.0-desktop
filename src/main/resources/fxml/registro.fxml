@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.RegisterController">
+<BorderPane prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gcmsystem.gcmsystemdesktop.controller.RegisterController">
    <center>
       <Pane prefWidth="850.0" BorderPane.alignment="CENTER">
          <children>
@@ -22,10 +22,10 @@
                   <TableColumn fx:id="timeColumn" prefWidth="68.0" text="Hora" />
                   <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="387.0" text="Equipamento">
                      <columns>
-                        <TableColumn fx:id="equipmentCategoryColumn" prefWidth="70.0" text="Categoria" />
-                        <TableColumn fx:id="equipmentPatrColumn" prefWidth="97.0" text="Patrimônio" />
-                        <TableColumn fx:id="equipmentSerieColumn" prefWidth="70.0" text="Série" />
-                        <TableColumn fx:id="equipmentPrefixColumn" prefWidth="89.0" text="Prefixo" />
+                        <TableColumn fx:id="equipmentCategoryColumn" prefWidth="96.0" text="Categoria" />
+                        <TableColumn fx:id="equipmentPatrColumn" prefWidth="75.0" text="Patrimônio" />
+                        <TableColumn fx:id="equipmentSerieColumn" prefWidth="56.0" text="Série" />
+                        <TableColumn fx:id="equipmentPrefixColumn" prefWidth="83.0" text="Prefixo" />
                      </columns>
                   </TableColumn>
                   <TableColumn prefWidth="212.0" text="Guarda Municipal">

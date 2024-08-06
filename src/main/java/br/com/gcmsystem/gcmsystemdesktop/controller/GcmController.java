@@ -79,6 +79,7 @@ public class GcmController{
                 Parent parent = loader.load();
 
                 Stage stage = new Stage();
+                stage.setResizable(false);// desativa maximizar janela
                 stage.setScene(new Scene(parent));
                 stage.initStyle(StageStyle.UTILITY);
                 stage.show();
